@@ -33,7 +33,7 @@ class CategorySelectViewModel @Inject constructor(
                val categoryList = categoryResponse.triviaCategories.map{
                    it.name
                }
-               _categoryState.tryEmit(CategorySelectState.ListAvailable(categoryList))
+               _categoryState.tryEmit(CategorySelectState.ListAvailable(categoryList.sorted()))
 
            } catch (e: Exception) {
                _categoryState.emit(
