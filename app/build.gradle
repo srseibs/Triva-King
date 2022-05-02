@@ -78,5 +78,24 @@ dependencies {
     def material3_version ='1.0.0-alpha10'
     implementation "androidx.compose.material3:material3:$material3_version"
     implementation "androidx.compose.material3:material3-window-size-class:$material3_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
+    // Accompanist --
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.24.7-alpha"
+
+
+}
+
+kotlin {
+    sourceSets {
+        all {
+            languageSettings.optIn("kotlin.RequiresOptIn")
+        }
+        debug {
+//            kotlin.srcDir("build/generated/ksp/debug/kotlin")
+        }
+        release {
+//            kotlin.srcDir("build/generated/ksp/release/kotlin")
+        }
+    }
 }
