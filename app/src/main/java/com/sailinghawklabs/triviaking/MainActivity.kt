@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sailinghawklabs.triviaking.ui.screen.category.CategorySelectScreen
+import com.sailinghawklabs.triviaking.ui.screen.quiz.QuizScreen
 import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -31,7 +32,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CategorySelectScreen()
+                   // CategorySelectScreen()
+                    QuizScreen()
                 }
             }
         }
