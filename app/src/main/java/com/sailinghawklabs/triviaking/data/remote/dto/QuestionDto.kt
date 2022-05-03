@@ -6,6 +6,7 @@ data class QuestionDto(
     val category: String,
     val type: String,
     val question: String,
+    val difficulty: String,
 
     @SerializedName("correct_answer")
     val correctAnswer: String,

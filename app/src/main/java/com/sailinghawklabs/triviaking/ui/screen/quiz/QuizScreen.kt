@@ -1,6 +1,7 @@
 package com.sailinghawklabs.triviaking.ui.screen.quiz
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sailinghawklabs.triviaking.domain.model.Question
 
@@ -8,21 +9,9 @@ import com.sailinghawklabs.triviaking.domain.model.Question
 fun QuizScreen(
     viewModel: QuizViewModel = hiltViewModel()
 ) {
-    val question = Question(
-        category = "Birds",
-        difficulty = "Easy",
-        question = "What is the air speed of a swallow",
-        correctAnswer = 0,
-        answers = listOf(
-            "Fully laden?",
-            "0.9c",
-            "They cannot fly"
-        )
-    )
-    val viewState = QuizScreenState(
-        question = question,
-        selectedAnswer = 2,
-    )
-    QuizScreenContent(viewState = viewState)
+
+    val viewState = viewModel.viewState.collectAsState()
+
+    QuizScreenContent(viewState = viewState.value)
 
 }

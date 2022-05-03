@@ -1,5 +1,9 @@
 package com.sailinghawklabs.triviaking.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.Colors
+import androidx.compose.material3.ColorScheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 
@@ -67,3 +71,6 @@ val md_theme_dark_shadow = Color(0xFF000000)
 
 val seed = Color(0xFF6750A4)
 val error = Color(0xFFB3261E)
+
+val ColorScheme.AppGreenPass: Color
+   get() = md_theme_light_secondary

@@ -1,6 +1,7 @@
 package com.sailinghawklabs.triviaking.ui.theme
 
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -15,4 +16,4 @@ data class Dimensions(
     val innerToolbarPadding: Dp = 4.dp,
 )
 
-val LocalDimensions = compositionLocalOf { Dimensions() }
+val LocalDimensions = staticCompositionLocalOf { Dimensions() }

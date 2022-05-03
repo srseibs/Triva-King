@@ -2,6 +2,9 @@ package com.sailinghawklabs.triviaking.data.remote.dto
 
 object ResponseCode {
 
+    const val SUCCESS = 0
+
+
     fun toMessage(code: Int): String {
 
         // from: https://opentdb.com/api_config.php

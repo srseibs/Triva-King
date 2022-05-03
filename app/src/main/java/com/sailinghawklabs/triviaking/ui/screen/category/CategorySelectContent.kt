@@ -73,7 +73,7 @@ fun CategorySelectContent(
                 }
                 is CategorySelectState.Error -> {
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize().padding(50.dp),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
@@ -124,7 +124,8 @@ class CategorySelectStateProvider : PreviewParameterProvider<CategorySelectState
     override val values: Sequence<CategorySelectState>
         get() = sequenceOf(
             CategorySelectState.LoadingState,
-            CategorySelectState.Error("sample error message"),
+            CategorySelectState.Error(
+                "sample error message that is long enough to wrap around to multiple lines."),
             CategorySelectState.ListAvailable(
                 (0..10).map {
                     Category(
