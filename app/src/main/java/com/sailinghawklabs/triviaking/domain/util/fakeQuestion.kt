@@ -8,9 +8,10 @@ import com.sailinghawklabs.triviaking.domain.model.Question
 fun fakeQuestion(): Question {
 
     return Question(
-        category = "Dumplings: Lots of fat and starch, lasjlasdasd alskhj asdasldkj dc",
+        category = "Entertainment: Video Games",
         difficulty = "Easy",
-        question = getLoremIpsum(words = 12),
+//        question = getLoremIpsum(words = 12),
+        question = "In &quot;Overwatch,&quot; what is the hero McCree&#039;s full name?",
         answers = listOf(
             getLoremIpsum(words = 2),
             getLoremIpsum(words = 4),

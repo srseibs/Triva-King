@@ -11,18 +11,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.TopAppBar
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CardDefaults.elevatedCardColors
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -31,12 +26,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.sailinghawklabs.triviaking.domain.util.expandHtmlCodes
 import com.sailinghawklabs.triviaking.domain.util.fakeQuestion
 import com.sailinghawklabs.triviaking.ui.theme.LocalDimensions
 import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
@@ -49,6 +43,7 @@ fun QuizScreenContent(
     viewState: QuizScreenState,
 ) {
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             TriviaAppBar(title = "Trivia King")
         },
@@ -66,9 +61,9 @@ fun QuizScreenContent(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-//                .padding(paddingValues.calculateTopPadding())  // for the Scaffold top bar
+                .padding(paddingValues)  // for the Scaffold top bar
                 .background(MaterialTheme.colorScheme.surface)
-        ){
+        ) {
             if (viewState.answers.isNotEmpty()) {
                 Column(
                 ) {
@@ -92,7 +87,7 @@ fun QuizScreenContent(
 fun QuestionSection(question: String) {
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = CenterHorizontally,
         modifier = Modifier
             .padding(20.dp)
             .fillMaxWidth(),
@@ -108,7 +103,7 @@ fun QuestionSection(question: String) {
         )
 
         Text(
-            text = question,
+            text = expandHtmlCodes(question),
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
             color = textColor,
@@ -125,9 +120,9 @@ fun AnswerSection(
     Column(
         modifier = Modifier.padding(8.dp)
     ) {
-        answers.forEachIndexed {i, it ->
+        answers.forEachIndexed { i, it ->
             AnswerDisplay(
-                answerText = it,
+                answerText = expandHtmlCodes(it),
                 answerState = answerState[i],
                 onClicked = {},
             )
@@ -179,28 +174,41 @@ private fun TriviaAppBar(
     title: String,
 ) {
     val dimensions = LocalDimensions.current
-    Surface(
-        color = MaterialTheme.colorScheme.primary,
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .statusBarsPadding()
-                .height(dimensions.toolbarHeight),
 
-            ) {
-
+    TopAppBar(
+    backgroundColor = MaterialTheme.colorScheme.primary,
+        title = {
             Text(
                 text = title,
                 color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier
-                    .weight(1f),
-                textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
             )
         }
-    }
+    )
+
+//    val dimensions = LocalDimensions.current
+//    Surface(
+//        color = MaterialTheme.colorScheme.primary,
+//    ) {
+//        Row(
+//            verticalAlignment = Alignment.CenterVertically,
+//            modifier = Modifier
+//                .statusBarsPadding()
+//                .height(dimensions.toolbarHeight),
+//
+//            ) {
+//
+//            Text(
+//                text = title,
+//                color = MaterialTheme.colorScheme.onPrimary,
+//                modifier = Modifier
+//                    .weight(1f),
+//                textAlign = TextAlign.Center,
+//                style = MaterialTheme.typography.titleLarge,
+//                fontWeight = FontWeight.Bold,
+//            )
+//        }
+//    }
 }
 
 @Composable
@@ -213,7 +221,7 @@ private fun QuizBottomBar(
 ) {
     BottomAppBar(
         containerColor = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(bottom = 56.dp)
+//        modifier = Modifier.padding(bottom = 56.dp)
     ) {
         Row(
             modifier = Modifier
@@ -224,7 +232,6 @@ private fun QuizBottomBar(
             val titleStyle = MaterialTheme.typography.titleMedium
             val valueStyle = MaterialTheme.typography.bodyLarge
             Column(
-//                modifier = Modifier.weight(0f)
             ) {
                 Text(
                     text = "Question",
@@ -241,11 +248,14 @@ private fun QuizBottomBar(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                Text(text = difficulty.replaceFirstChar{it.uppercase()},
+                Text(
+                    text = difficulty.replaceFirstChar { it.uppercase() },
                     style = titleStyle,
                     modifier = Modifier.align(CenterHorizontally)
                 )
-                Text(text = category,
+                Text(
+                    text = expandHtmlCodes(category),
+                    textAlign = TextAlign.Center,
                     style = valueStyle,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
@@ -256,7 +266,6 @@ private fun QuizBottomBar(
 
             Spacer(modifier = Modifier.width(18.dp))
             Column(
-//                modifier = Modifier.weight(0f)
             ) {
                 Text(
                     text = "Score",

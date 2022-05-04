@@ -1,5 +1,7 @@
 package com.sailinghawklabs.triviaking.di.module
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.sailinghawklabs.triviaking.data.remote.OpenTriviaDatabaseApi
 import com.sailinghawklabs.triviaking.data.remote.OpenTriviaDatabaseApi.Companion.BASE_URL
 import dagger.Module
@@ -20,9 +22,10 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideConverterFactory(): GsonConverterFactory =
-        GsonConverterFactory.create()
-
+    fun provideConverterFactory(): GsonConverterFactory {
+        val gson = GsonBuilder().disableHtmlEscaping().create()
+        return GsonConverterFactory.create(gson)
+    }
 
     @Singleton
     @Provides
