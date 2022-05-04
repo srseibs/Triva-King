@@ -13,6 +13,8 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.sailinghawklabs.triviaking.ui.screen.category.CategorySelectScreen
+import com.sailinghawklabs.triviaking.ui.screen.game.GameScreen
 import com.sailinghawklabs.triviaking.ui.screen.quiz.QuizScreen
 import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,8 +27,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             TriviaKingTheme {
                 ConfigureSystemBars(MaterialTheme.colorScheme.primary)
-                   // CategorySelectScreen()
-                    QuizScreen()
+                    //CategorySelectScreen()
+//                    QuizScreen()
+                GameScreen()
             }
         }
     }

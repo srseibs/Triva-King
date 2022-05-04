@@ -1,5 +1,6 @@
 package com.sailinghawklabs.triviaking.ui.screen.quiz
 
+import com.sailinghawklabs.triviaking.domain.model.Question
 import com.sailinghawklabs.triviaking.ui.theme.util.TriBoxState
 
 data class QuizScreenState(
@@ -13,3 +14,4 @@ data class QuizScreenState(
     val correctAnswer: Int = -1,
     val answerState: List<TriBoxState> = emptyList(),
 )
+
