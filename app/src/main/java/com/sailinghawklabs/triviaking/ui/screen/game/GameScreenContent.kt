@@ -1,8 +1,10 @@
 package com.sailinghawklabs.triviaking.ui.screen.game
 
 import android.content.res.Configuration
+import android.widget.EditText
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,11 +17,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -35,6 +40,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.sailinghawklabs.triviaking.ui.screen.category.CategorySelectContent
+import com.sailinghawklabs.triviaking.ui.screen.category.CategorySelectScreen
 import com.sailinghawklabs.triviaking.ui.theme.LocalDimensions
 import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 
@@ -49,6 +56,7 @@ fun GameScreenContent(
             GameTopBar(title = "Trivia King")
         },
     ) { paddingValues ->
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -60,7 +68,6 @@ fun GameScreenContent(
                 modifier = Modifier.padding(10.dp)
             ) {
 
-
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -68,9 +75,9 @@ fun GameScreenContent(
                         .weight(1f)
                         .fillMaxWidth(),
 
-                ){
+                    ) {
                     Button(
-                        onClick = {  }
+                        onClick = { }
                     ) {
                         Text(
                             modifier = Modifier.padding(12.dp),
@@ -80,12 +87,13 @@ fun GameScreenContent(
                     }
                 }
 
-
                 GameTitleBlock()
 
                 GameSettingsBlock(viewState)
 
+                Spacer(modifier = Modifier.height(40.dp))
             }
+
         }
     }
 }
@@ -135,7 +143,6 @@ fun GameSettingsBlock(viewState: GameScreenState) {
             title = "Number of Questions",
             value = viewState.numberOfQuestions.toString()
         ) {
-
         }
     }
 }
@@ -159,12 +166,13 @@ fun SettingRow(
         colors = CardDefaults.outlinedCardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
 
-        ),
+            ),
     ) {
 
-        Row(modifier = Modifier
-            .padding(20.dp)
-            .height(IntrinsicSize.Min)
+        Row(
+            modifier = Modifier
+                .padding(20.dp)
+                .height(IntrinsicSize.Min)
         ) {
             Text(
                 text = title,

@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.devtools.ksp' version '1.6.10-1.0.4'
 }
 
 android {
@@ -20,6 +21,17 @@ android {
             useSupportLibrary true
         }
     }
+
+    // https://composedestinations.rafaelcosta.xyz/setup
+    // added for ComposeDestinations library...
+    applicationVariants.all { variant ->
+        kotlin.sourceSets {
+            getByName(variant.name) {
+                kotlin.srcDir("build/generated/ksp/${variant.name}/kotlin")
+            }
+        }
+    }
+    // -----------------------------
 
     buildTypes {
         release {
@@ -80,9 +92,12 @@ dependencies {
     implementation "androidx.compose.material3:material3-window-size-class:$material3_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
-    // Accompanist UI Controller for transparent bars --
+    // Accompanist UI Controller needed for transparent bars --
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.24.7-alpha"
 
+    // Compose Destinations navigation --
+    implementation 'io.github.raamcosta.compose-destinations:core:1.5.2-beta'
+    ksp 'io.github.raamcosta.compose-destinations:ksp:1.5.2-beta'
 
 }
 

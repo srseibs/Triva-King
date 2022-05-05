@@ -9,4 +9,7 @@ data class GameScreenState(
     val numberOfQuestions: Int = 0,
     val gameCategory: String? = null,
     val gameCategoryId: Int? = null,
+    val showNumQuestionDialog: Boolean = false,
+    val showDifficultyDialog: Boolean = false,
+    val showCategoryDialog: Boolean = false,
 )
