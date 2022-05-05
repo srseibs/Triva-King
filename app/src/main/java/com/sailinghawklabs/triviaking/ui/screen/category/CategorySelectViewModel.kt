@@ -26,14 +26,12 @@ class CategorySelectViewModel @Inject constructor(
         fetchCategories()
     }
 
-
     private fun fetchCategories() {
         viewModelScope.launch{
            try {
                _categoryState.tryEmit(CategorySelectState.LoadingState)
                val categoryResponse = api.getCategories()
                val categoryList = categoryResponse.triviaCategories.map{ it }.sortedBy { it.name }
-               delay(2000)
                _categoryState.tryEmit(CategorySelectState.ListAvailable(categoryList.toCategoryList()))
 
            } catch (e: Exception) {

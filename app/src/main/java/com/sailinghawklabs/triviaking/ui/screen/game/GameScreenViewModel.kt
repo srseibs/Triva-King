@@ -13,4 +13,11 @@ class GameScreenViewModel @Inject constructor(
 
     private val _gameScreenState = MutableStateFlow(GameScreenState())
     val gameScreenState = _gameScreenState.asStateFlow()
+
+    fun onCategoryChanged(newCategoryName: String) {
+        // TODO: what to do about the ID ???
+        _gameScreenState.value = gameScreenState.value.copy(
+            gameCategory = newCategoryName
+        )
+    }
 }

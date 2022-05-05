@@ -1,10 +1,9 @@
 package com.sailinghawklabs.triviaking.ui.screen.game
 
 import android.content.res.Configuration
-import android.widget.EditText
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,13 +16,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,7 +28,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -40,8 +36,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.sailinghawklabs.triviaking.ui.screen.category.CategorySelectContent
-import com.sailinghawklabs.triviaking.ui.screen.category.CategorySelectScreen
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import com.sailinghawklabs.triviaking.ui.screen.destinations.CategorySelectScreenDestination
 import com.sailinghawklabs.triviaking.ui.theme.LocalDimensions
 import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 
@@ -49,7 +46,10 @@ import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 @Composable
 fun GameScreenContent(
     viewState: GameScreenState,
+    navigator: DestinationsNavigator,
 ) {
+
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -89,7 +89,7 @@ fun GameScreenContent(
 
                 GameTitleBlock()
 
-                GameSettingsBlock(viewState)
+                GameSettingsBlock(viewState, navigator)
 
                 Spacer(modifier = Modifier.height(40.dp))
             }
@@ -120,7 +120,10 @@ fun GameTitleBlock() {
 }
 
 @Composable
-fun GameSettingsBlock(viewState: GameScreenState) {
+fun GameSettingsBlock(
+    viewState: GameScreenState,
+    navigator: DestinationsNavigator,
+) {
     Column(
         modifier = Modifier.padding(horizontal = 20.dp)
     ) {
@@ -129,7 +132,8 @@ fun GameSettingsBlock(viewState: GameScreenState) {
             title = "Category",
             value = viewState.gameCategory ?: "ALL"
         ) {
-
+            Log.d("clicked", "GameSettingsBlock: ")
+            navigator.navigate(CategorySelectScreenDestination)
         }
 
         SettingRow(
@@ -152,13 +156,13 @@ fun GameSettingsBlock(viewState: GameScreenState) {
 fun SettingRow(
     title: String,
     value: String,
-    onClick: () -> Any
+    onClick: () -> Unit,
 ) {
     OutlinedCard(
         modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick }
-            .padding(12.dp),
+            .padding(12.dp)
+            .fillMaxWidth(),
+        onClick = onClick,
         elevation = CardDefaults.outlinedCardElevation(
             defaultElevation = 12.dp
         ),
@@ -236,6 +240,9 @@ fun GameScreenContentPreview() {
 
     TriviaKingTheme {
 
-        GameScreenContent(viewState = viewState)
+        GameScreenContent(
+            viewState = viewState,
+            navigator = EmptyDestinationsNavigator,
+        )
     }
 }

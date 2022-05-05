@@ -176,7 +176,7 @@ private fun QuizTopBar(
     val dimensions = LocalDimensions.current
 
     TopAppBar(
-    backgroundColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.primary,
         title = {
             Text(
                 text = title,
