@@ -1,15 +1,13 @@
 package com.sailinghawklabs.triviaking.ui.screen.game
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import com.sailinghawklabs.triviaking.domain.usecase.GetQuestionSet
 import com.sailinghawklabs.triviaking.ui.screen.destinations.CategorySelectScreenDestination
 import com.sailinghawklabs.triviaking.ui.theme.LocalDimensions
 import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
@@ -47,6 +46,7 @@ import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 fun GameScreenContent(
     viewState: GameScreenState,
     navigator: DestinationsNavigator,
+    onScreenEvent: (GameScreenEvent) -> Unit,
 ) {
 
 
@@ -89,7 +89,7 @@ fun GameScreenContent(
 
                 GameTitleBlock()
 
-                GameSettingsBlock(viewState, navigator)
+                GameSettingsBlock(viewState, navigator, onScreenEvent)
 
                 Spacer(modifier = Modifier.height(40.dp))
             }
@@ -123,31 +123,150 @@ fun GameTitleBlock() {
 fun GameSettingsBlock(
     viewState: GameScreenState,
     navigator: DestinationsNavigator,
+    onScreenEvent: (GameScreenEvent) -> Any,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 20.dp)
     ) {
 
-        SettingRow(
+        CategorySettingRow(
             title = "Category",
-            value = viewState.gameCategory ?: "ALL"
+            value = viewState.gamePreferences.category?.name ?: "ALL"
         ) {
-            Log.d("clicked", "GameSettingsBlock: ")
             navigator.navigate(CategorySelectScreenDestination)
         }
 
-        SettingRow(
-            title = "Difficulty",
-            value = viewState.gameDifficulty.toString()
-        ) {
-
-        }
+        DifficultySettingRow(
+            difficulty = viewState.gamePreferences.difficulty,
+            onChanged = { onScreenEvent(GameScreenEvent.DifficultyChanged(it)) }
+        )
 
         SettingRow(
             title = "Number of Questions",
-            value = viewState.numberOfQuestions.toString()
+            value = viewState.gamePreferences.numberOfQuestions.toString()
         ) {
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CategorySettingRow(
+    title: String,
+    value: String,
+    onClick: () -> Unit,
+) {
+    OutlinedCard(
+        onClick = onClick,
+        elevation = CardDefaults.outlinedCardElevation(
+            defaultElevation = 12.dp
+        ),
+        shape = RoundedCornerShape(percent = 30),
+        colors = CardDefaults.outlinedCardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+
+            ),
+        modifier = Modifier
+            .padding(12.dp)
+            .fillMaxWidth(),
+    ) {
+
+        Row(
+            modifier = Modifier
+                .padding(20.dp)
+                .defaultMinSize(40.dp)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.align(CenterVertically)
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Column(
+                horizontalAlignment = Alignment.End,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = value,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyLarge,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DifficultySettingRow(
+    difficulty: GetQuestionSet.DIFFICULTY,
+    onChanged: (GetQuestionSet.DIFFICULTY) -> Unit,
+) {
+    OutlinedCard(
+        elevation = CardDefaults.outlinedCardElevation(
+            defaultElevation = 12.dp
+        ),
+        shape = RoundedCornerShape(percent = 30),
+        colors = CardDefaults.outlinedCardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+
+            ),
+        modifier = Modifier
+            .padding(12.dp)
+            .fillMaxWidth(),
+    ) {
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+                .defaultMinSize(minHeight = 40.dp)
+        ) {
+            GetQuestionSet.DIFFICULTY.values().forEach {
+                DifficultyButton(
+                    label = it.name,
+                    selected = (difficulty == it),
+                    onClicked = { onChanged(it) },
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DifficultyButton(
+    label: String,
+    selected: Boolean,
+    onClicked: () -> Unit,
+) {
+
+
+    OutlinedCard(
+        onClick = { onClicked() },
+        shape = RoundedCornerShape(percent = 30),
+        colors = CardDefaults.outlinedCardColors(
+            containerColor = if (selected)
+                MaterialTheme.colorScheme.primary
+            else
+                MaterialTheme.colorScheme.primaryContainer,
+        ),
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.titleSmall,
+            color = if (selected)
+                MaterialTheme.colorScheme.onPrimary
+            else
+                MaterialTheme.colorScheme.onPrimaryContainer,
+            modifier = Modifier
+                .padding(8.dp)
+        )
     }
 }
 
@@ -159,9 +278,6 @@ fun SettingRow(
     onClick: () -> Unit,
 ) {
     OutlinedCard(
-        modifier = Modifier
-            .padding(12.dp)
-            .fillMaxWidth(),
         onClick = onClick,
         elevation = CardDefaults.outlinedCardElevation(
             defaultElevation = 12.dp
@@ -171,12 +287,15 @@ fun SettingRow(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
 
             ),
+        modifier = Modifier
+            .padding(12.dp)
+            .fillMaxWidth(),
     ) {
 
         Row(
             modifier = Modifier
                 .padding(20.dp)
-                .height(IntrinsicSize.Min)
+                .defaultMinSize(40.dp)
         ) {
             Text(
                 text = title,
@@ -235,7 +354,6 @@ private fun GameTopBar(
 @Composable
 fun GameScreenContentPreview() {
     val viewState = GameScreenState(
-        gameCategory = "Long game category - even longer - what happens now"
     )
 
     TriviaKingTheme {
@@ -243,6 +361,7 @@ fun GameScreenContentPreview() {
         GameScreenContent(
             viewState = viewState,
             navigator = EmptyDestinationsNavigator,
+            onScreenEvent = {},
         )
     }
 }

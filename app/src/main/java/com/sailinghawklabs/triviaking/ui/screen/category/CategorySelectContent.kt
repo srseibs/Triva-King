@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import com.ramcosta.composedestinations.result.EmptyResultBackNavigator
-import com.ramcosta.composedestinations.result.ResultBackNavigator
 import com.sailinghawklabs.triviaking.domain.model.Category
 import com.sailinghawklabs.triviaking.ui.theme.LocalDimensions
 import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
@@ -37,15 +36,15 @@ import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 @Composable
 fun CategorySelectContent(
     viewState: CategorySelectState,
-    navigator: DestinationsNavigator,
-    categoryResultNavigator: ResultBackNavigator<String>,
+    onCategoryClicked: (Category) -> Any,
+    onBackClicked: () -> Unit,
 ) {
 
     Scaffold(
         topBar = {
             ListToolBar(
                 title = "Category",
-                navigator = navigator,
+                onBackClicked = { onBackClicked() }
             )
         }
     ) { paddingValues ->
@@ -60,9 +59,7 @@ fun CategorySelectContent(
                         items(viewState.categories) { category ->
                             CategoryListItem(
                                 category = category,
-                                onCategorySelected = {
-                                    categoryResultNavigator.navigateBack(category.name)
-                                },
+                                onCategorySelected = { onCategoryClicked(category) },
                                 modifier = Modifier
                                     .padding(8.dp)
                                     .fillMaxWidth()
@@ -92,6 +89,10 @@ fun CategorySelectContent(
                         )
                     }
                 }
+                is CategorySelectState.Dismissed -> {
+
+
+                }
                 else -> {
                     Log.d("", "CategorySelectContent: Unexpected state...")
                 }
@@ -104,7 +105,7 @@ fun CategorySelectContent(
 @Composable
 private fun ListToolBar(
     title: String,
-    navigator: DestinationsNavigator,
+    onBackClicked: () -> Unit,
 ) {
     val dimensions = LocalDimensions.current
 
@@ -114,7 +115,7 @@ private fun ListToolBar(
         {
             IconButton(
                 onClick = {
-                    navigator.popBackStack()
+                    onBackClicked()
                 },
             ) {
                 Icon(
@@ -172,8 +173,8 @@ fun CategorySelectContentPreview(
     TriviaKingTheme {
         CategorySelectContent(
             viewState = viewState,
-            navigator = EmptyDestinationsNavigator,
-            categoryResultNavigator = EmptyResultBackNavigator(),
+            onBackClicked = {},
+            onCategoryClicked = {},
         )
     }
 }
