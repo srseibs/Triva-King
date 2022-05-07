@@ -30,13 +30,13 @@ class CategorySelectViewModel @Inject constructor(
         fetchCategories()
     }
 
-    fun updateCategory(newCategory: Category) {
+    fun updateCategory(newCategory: Category?) {
         viewModelScope.launch {
             storeCategory(newCategory)
         }
     }
 
-    private suspend fun storeCategory(newCategory: Category) {
+    private suspend fun storeCategory(newCategory: Category?) {
         dataStore.updateData {
             it.copy(
                 category = newCategory

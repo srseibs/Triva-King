@@ -16,6 +16,8 @@ data class GamePreferences(
     val difficulty: GetQuestionSet.DIFFICULTY,
 )
 
+val gameCategoryALL:Category? = null
+
 val defaultGamePreferences = GamePreferences(
     category = null,
     numberOfQuestions = 5,

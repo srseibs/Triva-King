@@ -2,6 +2,7 @@ package com.sailinghawklabs.triviaking.ui.screen.category
 
 import android.content.res.Configuration
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,6 +32,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import com.ramcosta.composedestinations.result.EmptyResultBackNavigator
 import com.sailinghawklabs.triviaking.domain.model.Category
+import com.sailinghawklabs.triviaking.domain.model.gameCategoryALL
 import com.sailinghawklabs.triviaking.ui.theme.LocalDimensions
 import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 
@@ -36,7 +40,7 @@ import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 @Composable
 fun CategorySelectContent(
     viewState: CategorySelectState,
-    onCategoryClicked: (Category) -> Any,
+    onCategoryClicked: (Category?) -> Any,
     onBackClicked: () -> Unit,
 ) {
 
@@ -44,7 +48,8 @@ fun CategorySelectContent(
         topBar = {
             ListToolBar(
                 title = "Category",
-                onBackClicked = { onBackClicked() }
+                onBackClicked = { onBackClicked() },
+                onCategoryClicked = { onCategoryClicked(it) }
             )
         }
     ) { paddingValues ->
@@ -106,6 +111,7 @@ fun CategorySelectContent(
 private fun ListToolBar(
     title: String,
     onBackClicked: () -> Unit,
+    onCategoryClicked: (Category?) -> Any,
 ) {
     val dimensions = LocalDimensions.current
 
@@ -122,6 +128,20 @@ private fun ListToolBar(
                     imageVector = Icons.Filled.ArrowBack,
                     tint = MaterialTheme.colorScheme.onPrimary,
                     contentDescription = "back"
+                )
+            }
+        },
+        actions = {
+            Button(
+                onClick = { onCategoryClicked(gameCategoryALL) },
+                colors = buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                ),
+
+            ) {
+                Text(
+                    text = "Use All",
+                    color = MaterialTheme.colorScheme.onPrimary,
                 )
             }
         },

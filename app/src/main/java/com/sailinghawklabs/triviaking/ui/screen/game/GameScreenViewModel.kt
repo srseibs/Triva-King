@@ -1,6 +1,7 @@
 package com.sailinghawklabs.triviaking.ui.screen.game
 
 import android.util.Log
+import androidx.core.math.MathUtils
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +13,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+// TODO: should be in domain use cases ??
+const val MAX_NUM_QUESTIONS = 10
+const val MIN_NUM_QUESTIONS = 2
 
 @HiltViewModel
 class GameScreenViewModel @Inject constructor(
@@ -29,6 +34,10 @@ class GameScreenViewModel @Inject constructor(
 
     fun onGameEvent(event: GameScreenEvent) {
         when (event) {
+            is GameScreenEvent.NumQuestionsChanged -> {
+                processNumQuestionsChange(event.newNumQuestions)
+            }
+
             is GameScreenEvent.DifficultyChanged -> {
                 viewModelScope.launch {
                     dataStore.updateData {
@@ -37,6 +46,20 @@ class GameScreenViewModel @Inject constructor(
                         )
                     }
                 }
+            }
+        }
+    }
+
+    private fun processNumQuestionsChange(change:Int) {
+        val newNumQuestions = gameScreenState.value.gamePreferences.numberOfQuestions + change
+        viewModelScope.launch {
+            dataStore.updateData {
+                it.copy(
+                    numberOfQuestions = MathUtils.clamp(
+                        newNumQuestions,
+                        MIN_NUM_QUESTIONS,
+                        MAX_NUM_QUESTIONS)
+                )
             }
         }
     }

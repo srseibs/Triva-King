@@ -109,6 +109,8 @@ dependencies {
     // this is needed if you want to store lists in ProtoDataStore
     implementation "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5"
 
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+
 }
 
 kotlin {

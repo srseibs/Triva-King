@@ -10,12 +10,19 @@ import com.sailinghawklabs.triviaking.R
 
 //val defaultFontFamily = FontFamily.Default
 
-val defaultFontFamily = FontFamily(
+val ralewayFontFamily = FontFamily(
     Font(R.font.raleway_regular),
     Font(R.font.raleway_bold),
     Font(R.font.raleway_italic),
-
 )
+
+val livvicFontFamily = FontFamily(
+    Font(R.font.livvic_regular),
+    Font(R.font.livvic_bold),
+    Font(R.font.livvic_italic),
+)
+
+val defaultFontFamily = livvicFontFamily
 
 
 
