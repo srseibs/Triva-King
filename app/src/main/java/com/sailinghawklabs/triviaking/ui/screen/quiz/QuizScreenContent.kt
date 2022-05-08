@@ -45,7 +45,7 @@ fun QuizScreenContent(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TriviaAppBar(title = "Trivia King")
+            QuizTopBar(title = "Trivia King")
         },
         bottomBar = {
             QuizBottomBar(
@@ -170,13 +170,13 @@ fun AnswerDisplay(
 }
 
 @Composable
-private fun TriviaAppBar(
+private fun QuizTopBar(
     title: String,
 ) {
     val dimensions = LocalDimensions.current
 
     TopAppBar(
-    backgroundColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.primary,
         title = {
             Text(
                 text = title,
@@ -185,30 +185,6 @@ private fun TriviaAppBar(
             )
         }
     )
-
-//    val dimensions = LocalDimensions.current
-//    Surface(
-//        color = MaterialTheme.colorScheme.primary,
-//    ) {
-//        Row(
-//            verticalAlignment = Alignment.CenterVertically,
-//            modifier = Modifier
-//                .statusBarsPadding()
-//                .height(dimensions.toolbarHeight),
-//
-//            ) {
-//
-//            Text(
-//                text = title,
-//                color = MaterialTheme.colorScheme.onPrimary,
-//                modifier = Modifier
-//                    .weight(1f),
-//                textAlign = TextAlign.Center,
-//                style = MaterialTheme.typography.titleLarge,
-//                fontWeight = FontWeight.Bold,
-//            )
-//        }
-//    }
 }
 
 @Composable

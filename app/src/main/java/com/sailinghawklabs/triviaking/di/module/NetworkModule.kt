@@ -40,7 +40,6 @@ object NetworkModule {
 
     }
 
-
     @Singleton
     @Provides
     fun provideTriviaApi(

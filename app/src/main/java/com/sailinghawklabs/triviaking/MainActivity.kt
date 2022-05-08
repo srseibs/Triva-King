@@ -4,16 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.sailinghawklabs.triviaking.ui.screen.quiz.QuizScreen
+import com.ramcosta.composedestinations.DestinationsNavHost
+import com.sailinghawklabs.triviaking.ui.screen.NavGraphs
 import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,8 +22,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             TriviaKingTheme {
                 ConfigureSystemBars(MaterialTheme.colorScheme.primary)
-                   // CategorySelectScreen()
-                    QuizScreen()
+
+                DestinationsNavHost(navGraph = NavGraphs.root)
             }
         }
     }

@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sailinghawklabs.triviaking.domain.model.Category
+import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,6 +34,7 @@ fun CategoryListItem(
 ) {
     Card(
         modifier = modifier,
+        onClick = onCategorySelected,
     ){
         Row(
 
@@ -46,6 +48,7 @@ fun CategoryListItem(
             Text(
                 text = category.name,
                 color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier
                     .padding(10.dp)
                     .align(Alignment.CenterVertically)
@@ -64,15 +67,16 @@ fun CategoryBadge(
         modifier = modifier
             .size(50.dp)
             .background(
-                MaterialTheme.colorScheme.secondary,
-                CircleShape)
+                color = MaterialTheme.colorScheme.secondary,
+                shape = CircleShape,
+            )
     ) {
         Text(
             text = title.substring(0,1).uppercase(),
-            modifier = Modifier.align(Alignment.Center),
+            modifier = Modifier.align(Alignment.Center).align(Alignment.TopCenter),
             color = MaterialTheme.colorScheme.onSecondary,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 24.sp,
+            fontSize = 18.sp,
         )
     }
 }
@@ -88,12 +92,14 @@ fun CategoryBadge(
 )
 @Composable
 fun CategoryListItemPreview() {
-    CategoryListItem(
-        category = Category(
-            id =1,
-            name = "dummy category with a very long name that will wrap to the next line"
-        ),
-        onCategorySelected =  {},
-        modifier = Modifier.fillMaxWidth()
-    )
+    TriviaKingTheme {
+        CategoryListItem(
+            category = Category(
+                id = 1,
+                name = "dummy category with a very long name that will wrap to the next line"
+            ),
+            onCategorySelected = {},
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
 }

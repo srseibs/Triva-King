@@ -10,6 +10,8 @@ sealed class CategorySelectState {
         val categories: List<Category>
     ) : CategorySelectState()
 
+    object Dismissed : CategorySelectState()
+
     data class Error(val errorMessage: String) : CategorySelectState()
 
 }
