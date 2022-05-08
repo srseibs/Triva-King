@@ -6,6 +6,5 @@ import com.sailinghawklabs.triviaking.domain.model.defaultGamePreferences
 import com.sailinghawklabs.triviaking.domain.usecase.GetQuestionSet
 
 data class GameScreenState(
-    val gameQuestions: List<Question> = emptyList(),  //? is this right? Screen doesn't use it
     val gamePreferences: GamePreferences = defaultGamePreferences,
 )

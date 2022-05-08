@@ -29,6 +29,7 @@ import com.sailinghawklabs.triviaking.domain.model.Category
 import com.sailinghawklabs.triviaking.domain.model.GamePreferences
 import com.sailinghawklabs.triviaking.domain.usecase.GetQuestionSet
 import com.sailinghawklabs.triviaking.ui.screen.destinations.CategorySelectScreenDestination
+import com.sailinghawklabs.triviaking.ui.screen.destinations.QuizScreenDestination
 import com.sailinghawklabs.triviaking.ui.theme.LocalDimensions
 import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 
@@ -65,7 +66,7 @@ fun GameScreenContent(
 
                     ) {
                     Button(
-                        onClick = { }
+                        onClick = { navigator.navigate(QuizScreenDestination) }
                     ) {
                         Text(
                             modifier = Modifier.padding(12.dp),
@@ -133,8 +134,6 @@ fun GameSettingsBlock(
 private fun GameTopBar(
     title: String,
 ) {
-    val dimensions = LocalDimensions.current
-
     CenterAlignedTopAppBar(
         colors = centerAlignedTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,

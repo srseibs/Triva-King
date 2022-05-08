@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sailinghawklabs.triviaking.domain.model.Category
 import com.sailinghawklabs.triviaking.domain.model.GamePreferences
+import com.sailinghawklabs.triviaking.domain.model.defaultGamePreferences
 import com.sailinghawklabs.triviaking.domain.usecase.GetQuestionSet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,12 +25,9 @@ class GameScreenViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _gameScreenState = MutableStateFlow(GameScreenState(
-        gamePreferences = GamePreferences(
-            category = Category("Famous Dogs", 12),
-            numberOfQuestions = 4,
-            difficulty = GetQuestionSet.DIFFICULTY.HARD,
+        gamePreferences = defaultGamePreferences
         )
-    ))
+    )
     val gameScreenState = _gameScreenState.asStateFlow()
 
     fun onGameEvent(event: GameScreenEvent) {
@@ -39,13 +37,17 @@ class GameScreenViewModel @Inject constructor(
             }
 
             is GameScreenEvent.DifficultyChanged -> {
-                viewModelScope.launch {
-                    dataStore.updateData {
-                        it.copy(
-                            difficulty = event.newDifficulty
-                        )
-                    }
-                }
+                processDifficultyChanged(event.newDifficulty)
+            }
+        }
+    }
+
+    private fun processDifficultyChanged(newDifficulty: GetQuestionSet.DIFFICULTY) {
+        viewModelScope.launch {
+            dataStore.updateData {
+                it.copy(
+                    difficulty = newDifficulty
+                )
             }
         }
     }
