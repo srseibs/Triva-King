@@ -11,8 +11,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.PlusOne
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -70,7 +73,7 @@ fun NumberOfQuestionsSettingRow(
                     onClick = { onNumDecrement() },
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowBack,
+                        imageVector = Icons.Filled.Remove,
                         tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         contentDescription = "minus one",
                         modifier = Modifier.fillMaxHeight()
@@ -90,7 +93,7 @@ fun NumberOfQuestionsSettingRow(
                     onClick = { onNumIncrement() },
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowForward,
+                        imageVector = Icons.Filled.Add,
                         tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         contentDescription = "plus one",
                         modifier = Modifier.fillMaxHeight()
