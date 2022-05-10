@@ -2,6 +2,7 @@ package com.sailinghawklabs.triviaking.domain.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
+import com.sailinghawklabs.triviaking.domain.model.DIFFICULTY
 import com.sailinghawklabs.triviaking.domain.model.Question
 
 @Composable
@@ -9,7 +10,7 @@ fun fakeQuestion(): Question {
 
     return Question(
         category = "Entertainment: Video Games",
-        difficulty = "Easy",
+        difficulty = DIFFICULTY.EASY,
 //        question = getLoremIpsum(words = 12),
         question = "In &quot;Overwatch,&quot; what is the hero McCree&#039;s full name?",
         answers = listOf(

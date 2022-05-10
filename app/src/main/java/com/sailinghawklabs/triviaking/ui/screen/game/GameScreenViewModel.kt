@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// TODO: should be in domain use cases ??
+
 const val MAX_NUM_QUESTIONS = 10
 const val MIN_NUM_QUESTIONS = 2
 

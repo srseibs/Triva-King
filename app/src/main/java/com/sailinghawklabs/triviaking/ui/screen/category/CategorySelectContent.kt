@@ -113,7 +113,6 @@ private fun ListToolBar(
     onBackClicked: () -> Unit,
     onCategoryClicked: (Category?) -> Any,
 ) {
-    val dimensions = LocalDimensions.current
 
     TopAppBar(
         backgroundColor = MaterialTheme.colorScheme.primary,

@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.sailinghawklabs.triviaking.data.mapper.toDisplayString
 import com.sailinghawklabs.triviaking.data.remote.dto.expandHtmlCodes
 import com.sailinghawklabs.triviaking.domain.util.fakeQuestion
 import com.sailinghawklabs.triviaking.ui.theme.LocalDimensions
@@ -277,7 +278,7 @@ fun QuizScreenContentPreview() {
     val viewState = QuizScreenState(
         question = dummyQuestion.question,
         category = dummyQuestion.category,
-        difficulty = dummyQuestion.difficulty,
+        difficulty = dummyQuestion.difficulty.toDisplayString(),
         answers = dummyQuestion.answers,
         answerState = listOf(
             TriBoxState.CORRECT, TriBoxState.UNCHECKED, TriBoxState.WRONG

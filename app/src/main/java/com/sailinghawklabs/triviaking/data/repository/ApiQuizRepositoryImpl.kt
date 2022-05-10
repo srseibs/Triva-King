@@ -86,7 +86,6 @@ class ApiQuizRepositoryImpl @Inject constructor(
             } catch (e: Exception) {
                 e.printStackTrace()
                 emit(Result.Error("Unknown error"))
-                null
             }
         }
     }

@@ -3,6 +3,7 @@ package com.sailinghawklabs.triviaking.ui.screen.quiz
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sailinghawklabs.triviaking.data.mapper.toDisplayString
 import com.sailinghawklabs.triviaking.domain.model.Question
 import com.sailinghawklabs.triviaking.domain.model.defaultGamePreferences
 import com.sailinghawklabs.triviaking.domain.repository.QuizRepository
@@ -37,8 +38,6 @@ class QuizViewModel @Inject constructor(
     private fun fetchAllQuestions() {
         viewModelScope.launch {
 
-            // TODO: domain should use enums for difficulty, and the string processing should
-            // happen in the repository.
 
             try {
                 viewModelScope.launch {
@@ -84,7 +83,7 @@ class QuizViewModel @Inject constructor(
             question = question.question,
             numberOfQuestions = 5,
             numCorrect = 0,
-            difficulty = question.difficulty,
+            difficulty = question.difficulty.toDisplayString(),
             answers = answers,
             correctAnswer = correctAnswerIndex,
             answerState = answerState
