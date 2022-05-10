@@ -1,6 +1,5 @@
 package com.sailinghawklabs.triviaking.domain.model
 
-import com.sailinghawklabs.triviaking.domain.usecase.GetQuestionSet
 import kotlinx.serialization.Serializable
 
 /**
@@ -13,13 +12,15 @@ import kotlinx.serialization.Serializable
 data class GamePreferences(
     val category: Category?,
     val numberOfQuestions: Int,
-    val difficulty: GetQuestionSet.DIFFICULTY,
+    val difficulty: DIFFICULTY,
 )
+
+enum class DIFFICULTY {ANY, EASY, DIFFICULT, HARD}
 
 val gameCategoryALL:Category? = null
 
 val defaultGamePreferences = GamePreferences(
     category = null,
     numberOfQuestions = 5,
-    difficulty = GetQuestionSet.DIFFICULTY.ANY
+    difficulty = DIFFICULTY.ANY
 )

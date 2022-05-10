@@ -19,6 +19,7 @@ interface OpenTriviaDatabaseApi {
     suspend fun getQuestions(
         @Query("amount") quantity: Int,
         @Query("category") categoryId: Int?,
+        @Query("difficulty") difficulty: String?,
         ): QuestionsResponseDto
 
 

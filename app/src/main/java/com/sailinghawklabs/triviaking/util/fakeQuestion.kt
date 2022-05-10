@@ -17,7 +17,7 @@ fun fakeQuestion(): Question {
             getLoremIpsum(words = 4),
             getLoremIpsum(words = 15),
         ),
-        correctAnswer = 1,
+        correctAnswer = getLoremIpsum(words = 3),
     )
 }
 

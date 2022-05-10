@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import com.sailinghawklabs.triviaking.domain.model.Category
+import com.sailinghawklabs.triviaking.domain.model.DIFFICULTY
 import com.sailinghawklabs.triviaking.domain.model.GamePreferences
-import com.sailinghawklabs.triviaking.domain.usecase.GetQuestionSet
 import com.sailinghawklabs.triviaking.ui.screen.destinations.CategorySelectScreenDestination
 import com.sailinghawklabs.triviaking.ui.screen.destinations.QuizScreenDestination
 import com.sailinghawklabs.triviaking.ui.theme.LocalDimensions
@@ -161,7 +161,7 @@ fun GameScreenContentPreview() {
     val viewState = GameScreenState(
         gamePreferences = GamePreferences(
             numberOfQuestions = 6,
-            difficulty = GetQuestionSet.DIFFICULTY.HARD,
+            difficulty = DIFFICULTY.HARD,
             category = Category(
                 id = 12,
                 name = "Really long name taking 2 lines."

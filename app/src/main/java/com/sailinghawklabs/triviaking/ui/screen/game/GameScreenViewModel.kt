@@ -5,10 +5,9 @@ import androidx.core.math.MathUtils
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sailinghawklabs.triviaking.domain.model.Category
+import com.sailinghawklabs.triviaking.domain.model.DIFFICULTY
 import com.sailinghawklabs.triviaking.domain.model.GamePreferences
 import com.sailinghawklabs.triviaking.domain.model.defaultGamePreferences
-import com.sailinghawklabs.triviaking.domain.usecase.GetQuestionSet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -42,7 +41,7 @@ class GameScreenViewModel @Inject constructor(
         }
     }
 
-    private fun processDifficultyChanged(newDifficulty: GetQuestionSet.DIFFICULTY) {
+    private fun processDifficultyChanged(newDifficulty: DIFFICULTY) {
         viewModelScope.launch {
             dataStore.updateData {
                 it.copy(
