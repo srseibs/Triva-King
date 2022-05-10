@@ -3,10 +3,11 @@ package com.sailinghawklabs.triviaking.ui.screen.category
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sailinghawklabs.triviaking.data.remote.OpenTriviaDatabaseApi
-import com.sailinghawklabs.triviaking.data.remote.dto.toCategoryList
+
 import com.sailinghawklabs.triviaking.domain.model.Category
 import com.sailinghawklabs.triviaking.domain.model.GamePreferences
+import com.sailinghawklabs.triviaking.domain.repository.QuizRepository
+import com.sailinghawklabs.triviaking.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,9 +18,12 @@ import javax.inject.Inject
 @HiltViewModel
 class CategorySelectViewModel @Inject constructor(
 
+    private val triviaRepository: QuizRepository,
+
     // need to use repository
-    private val api: OpenTriviaDatabaseApi,
     private val dataStore: DataStore<GamePreferences>
+
+
 ) : ViewModel() {
 
     private val _categoryState =
@@ -48,13 +52,36 @@ class CategorySelectViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _categoryState.tryEmit(CategorySelectState.LoadingState)
-                val categoryResponse = api.getCategories()
-                val categoryList = categoryResponse.triviaCategories.map { it }.sortedBy { it.name }
-                _categoryState.tryEmit(CategorySelectState.ListAvailable(categoryList.toCategoryList()))
+
+                triviaRepository.fetchCategories().collect { result ->
+                    when (result) {
+                        is Result.Loading -> {
+                            _categoryState.emit(CategorySelectState.LoadingState)
+                        }
+                        is Result.Success -> {
+                            result.data?.let { categories ->
+                                val sortedCategories = categories.map { it }.sortedBy { it.name }
+                                _categoryState.emit(
+                                    CategorySelectState.ListAvailable(
+                                        categories = sortedCategories
+                                    )
+                                )
+                            }
+                        }
+                        is Result.Error -> {
+                            _categoryState.emit(
+                                CategorySelectState.Error(
+                                    errorMessage = result.message ?: "Missing error message."
+                                )
+                            )
+                        }
+                    }
+
+                }
 
             } catch (e: Exception) {
                 _categoryState.emit(
-                    CategorySelectState.Error(e.localizedMessage ?: "Unknown")
+                    CategorySelectState.Error(e.localizedMessage ?: "Unknown error [try]")
                 )
             }
         }

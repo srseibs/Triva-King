@@ -16,6 +16,6 @@ fun QuizScreen(
 
     val viewState = viewModel.viewState.collectAsState()
 
-    QuizScreenContent(viewState = viewState.value)
+    QuizScreenContent(viewState = viewState.value.screenState)
 
 }

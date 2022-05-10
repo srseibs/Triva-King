@@ -1,11 +1,13 @@
 package com.sailinghawklabs.triviaking.ui.screen.quiz
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sailinghawklabs.triviaking.data.remote.OpenTriviaDatabaseApi
-import com.sailinghawklabs.triviaking.data.remote.dto.QuestionDto
-import com.sailinghawklabs.triviaking.data.remote.dto.ResponseCode
+import com.sailinghawklabs.triviaking.domain.model.Question
+import com.sailinghawklabs.triviaking.domain.model.defaultGamePreferences
+import com.sailinghawklabs.triviaking.domain.repository.QuizRepository
 import com.sailinghawklabs.triviaking.ui.theme.util.TriBoxState
+import com.sailinghawklabs.triviaking.util.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,42 +18,67 @@ import kotlin.random.Random
 @HiltViewModel
 class QuizViewModel @Inject constructor(
     // need to use repository
-    private val api: OpenTriviaDatabaseApi,
+    private val repository: QuizRepository,
+
+//    private val getQuestionSetUseCase: GetQuestionSet,
+
 ) : ViewModel() {
 
-    private val _viewState = MutableStateFlow(QuizScreenState())
+    private val _viewState = MutableStateFlow(QuizOverallState())
     val viewState = _viewState.asStateFlow()
 
+    private val gamePreferencesState = mutableStateOf(defaultGamePreferences)
+
     init {
-        fetchQuestions()
+        fetchAllQuestions()
     }
 
 
-    private fun fetchQuestions() {
+    private fun fetchAllQuestions() {
         viewModelScope.launch {
-            val questionResponse = api.getQuestions(
-                quantity = 5,
-                categoryId = null,
-            )
 
-            if (questionResponse.responseCode == ResponseCode.SUCCESS) {
-                val question = questionResponse.results[0] // for now
-                _viewState.value = prepareQuestion(question)
+            // TODO: domain should use enums for difficulty, and the string processing should
+            // happen in the repository.
+
+            try {
+                viewModelScope.launch {
+                    repository.fetchQuestionSet(
+                        numberOfQuestions = gamePreferencesState.value.numberOfQuestions,
+                        categoryId = gamePreferencesState.value.category?.id,
+                        difficultyString = gamePreferencesState.value.difficulty.toString()
+                            .lowercase()
+                    ).collect() { result ->
+                        when (result) {
+                            is Result.Success -> {
+
+
+                                val newQuestion = result.data?.get(0)  // for now
+                                _viewState.value = _viewState.value.copy(
+                                    screenState = prepareQuestion(question = newQuestion!!)
+                                )
+                            }
+
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+
             }
+
         }
 
     }
 
 
-    private fun prepareQuestion(question: QuestionDto): QuizScreenState {
-        val incorrectAnswers = question.incorrectAnswers
+    private fun prepareQuestion(question: Question): QuizScreenState {
+        val incorrectAnswers = question.answers
         val numAnswers = incorrectAnswers.size + 1
         val correctAnswerIndex = Random.nextInt(numAnswers)
-        val answers = question.incorrectAnswers.shuffled().toMutableList()
+        val answers = question.answers.shuffled().toMutableList()
         answers.add(correctAnswerIndex, question.correctAnswer)
         val answerState = List(numAnswers) { TriBoxState.UNCHECKED }
 
-        return _viewState.value.copy(
+        return _viewState.value.screenState.copy(
             category = question.category,
             questionNumber = 0,
             question = question.question,

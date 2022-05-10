@@ -1,4 +1,4 @@
-package com.sailinghawklabs.triviaking.domain.util
+package com.sailinghawklabs.triviaking.data.remote.dto
 
 import androidx.core.text.HtmlCompat
 

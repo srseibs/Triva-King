@@ -16,13 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.sailinghawklabs.triviaking.domain.usecase.GetQuestionSet
+import com.sailinghawklabs.triviaking.domain.model.DIFFICULTY
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DifficultySettingRow(
-    difficulty: GetQuestionSet.DIFFICULTY,
-    onChanged: (GetQuestionSet.DIFFICULTY) -> Unit,
+    difficulty: DIFFICULTY,
+    onChanged: (DIFFICULTY) -> Unit,
 ) {
     OutlinedCard(
         elevation = CardDefaults.outlinedCardElevation(
@@ -46,7 +46,7 @@ fun DifficultySettingRow(
                 .fillMaxSize()
                 .padding(10.dp)
         ) {
-            GetQuestionSet.DIFFICULTY.values().forEach {
+            DIFFICULTY.values().forEach {
                 DifficultyButton(
                     label = it.name,
                     selected = (difficulty == it),
