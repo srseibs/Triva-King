@@ -1,4 +1,4 @@
-package com.sailinghawklabs.triviaking.ui.screen.game
+package com.sailinghawklabs.triviaking.presentation.game
 
 import com.sailinghawklabs.triviaking.domain.model.GamePreferences
 import com.sailinghawklabs.triviaking.domain.model.defaultGamePreferences

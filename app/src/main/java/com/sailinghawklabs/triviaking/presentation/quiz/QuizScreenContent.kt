@@ -1,9 +1,9 @@
-package com.sailinghawklabs.triviaking.ui.screen.quiz
+package com.sailinghawklabs.triviaking.presentation.quiz
 
 import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,10 +13,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
-import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.CardDefaults.elevatedCardColors
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,12 +29,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sailinghawklabs.triviaking.data.mapper.toDisplayString
 import com.sailinghawklabs.triviaking.data.remote.dto.expandHtmlCodes
 import com.sailinghawklabs.triviaking.domain.util.fakeQuestion
+import com.sailinghawklabs.triviaking.presentation.destinations.QuizScreenDestination
 import com.sailinghawklabs.triviaking.ui.theme.LocalDimensions
 import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 import com.sailinghawklabs.triviaking.ui.theme.util.TriBox
@@ -42,6 +45,7 @@ import com.sailinghawklabs.triviaking.ui.theme.util.TriBoxState
 @Composable
 fun QuizScreenContent(
     viewState: QuizScreenState,
+    onViewEvent: (QuizScreenEvent) -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -73,8 +77,11 @@ fun QuizScreenContent(
                     AnswerSection(
                         answers = viewState.answers,
                         answerState = viewState.answerState,
-                        onAnswerClicked = {}
+                        onAnswerClicked = {
+                            onViewEvent(QuizScreenEvent.AnswerPressed(it))
+                        }
                     )
+                    ContinuationSection()
                 }
             }
         }
@@ -83,6 +90,29 @@ fun QuizScreenContent(
 
 }
 
+
+@Composable
+fun ContinuationSection() {
+    Column(
+        horizontalAlignment = CenterHorizontally,
+        modifier = Modifier
+            .padding(20.dp)
+            .fillMaxWidth(),
+    ) {
+        Button(
+            onClick = {  },
+            colors = buttonColors(
+                containerColor = MaterialTheme.colorScheme.onSurface,
+            ),
+        ) {
+            Text(
+                modifier = Modifier.padding(12.dp),
+                text = "Start Game",
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
+    }
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuestionSection(question: String) {
@@ -116,8 +146,10 @@ fun QuestionSection(question: String) {
 fun AnswerSection(
     answers: List<String>,
     answerState: List<TriBoxState>,
-    onAnswerClicked: (Int) -> Any,
+    onAnswerClicked: (Int) -> Unit,
 ) {
+
+    Log.d("", "AnswerSection: ${answerState.joinToString()}")
     Column(
         modifier = Modifier.padding(8.dp)
     ) {
@@ -125,7 +157,9 @@ fun AnswerSection(
             AnswerDisplay(
                 answerText = expandHtmlCodes(it),
                 answerState = answerState[i],
-                onClicked = {},
+                onClicked = {
+                    onAnswerClicked(i)
+                },
             )
             Spacer(modifier = Modifier.height(10.dp))
         }
@@ -145,14 +179,18 @@ fun AnswerDisplay(
     ) {
         TriBox(
             state = answerState,
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier
+                .size(32.dp)
+                .clickable {
+                    onClicked()
+                }
         )
 
         ElevatedCard(
             colors = elevatedCardColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
             ),
-            onClick = {},
+            onClick = { onClicked() },
             modifier = Modifier
                 .padding(start = 2.dp)
                 .fillMaxWidth(),
@@ -188,88 +226,17 @@ private fun QuizTopBar(
     )
 }
 
-@Composable
-private fun QuizBottomBar(
-    questionNumber: Int,
-    totalQuestions: Int,
-    numberCorrect: Int,
-    category: String,
-    difficulty: String,
-) {
-    BottomAppBar(
-        containerColor = MaterialTheme.colorScheme.primary,
-//        modifier = Modifier.padding(bottom = 56.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            val titleStyle = MaterialTheme.typography.titleMedium
-            val valueStyle = MaterialTheme.typography.bodyLarge
-            Column(
-            ) {
-                Text(
-                    text = "Question",
-                    style = titleStyle,
-                    modifier = Modifier.align(CenterHorizontally)
-                )
-                Text(
-                    text = "${questionNumber + 1} of $totalQuestions",
-                    style = valueStyle,
-                    modifier = Modifier.align(CenterHorizontally)
-                )
-            }
-            Spacer(modifier = Modifier.width(18.dp))
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = difficulty.replaceFirstChar { it.uppercase() },
-                    style = titleStyle,
-                    modifier = Modifier.align(CenterHorizontally)
-                )
-                Text(
-                    text = expandHtmlCodes(category),
-                    textAlign = TextAlign.Center,
-                    style = valueStyle,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .align(CenterHorizontally)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(18.dp))
-            Column(
-            ) {
-                Text(
-                    text = "Score",
-                    style = titleStyle,
-                    modifier = Modifier.align(CenterHorizontally)
-                )
-                Text(
-                    text = "$numberCorrect",
-                    style = valueStyle,
-                    modifier = Modifier.align(CenterHorizontally)
-                )
-            }
-
-        }
-    }
-
-}
-
 @Preview(
     name = "Night Mode",
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showSystemUi = true,
+    device = Devices.PIXEL
 )
 @Preview(
     name = "Day Mode",
     uiMode = Configuration.UI_MODE_NIGHT_NO,
-    showSystemUi = false,
+    showSystemUi = true,
+    device = Devices.PIXEL
 )
 @Composable
 fun QuizScreenContentPreview() {
@@ -288,6 +255,9 @@ fun QuizScreenContentPreview() {
         numCorrect = 1,
     )
     TriviaKingTheme() {
-        QuizScreenContent(viewState = viewState)
+        QuizScreenContent(
+            viewState = viewState,
+            onViewEvent = {},
+        )
     }
 }

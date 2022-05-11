@@ -1,4 +1,4 @@
-package com.sailinghawklabs.triviaking.ui.screen.game
+package com.sailinghawklabs.triviaking.presentation.game
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.sailinghawklabs.triviaking.data.mapper.toDisplayString
 import com.sailinghawklabs.triviaking.domain.model.DIFFICULTY
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,7 +49,7 @@ fun DifficultySettingRow(
         ) {
             DIFFICULTY.values().forEach {
                 DifficultyButton(
-                    label = it.name,
+                    label = it.toDisplayString(),
                     selected = (difficulty == it),
                     onClicked = { onChanged(it) },
                 )

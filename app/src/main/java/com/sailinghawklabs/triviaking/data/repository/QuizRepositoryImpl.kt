@@ -1,10 +1,13 @@
 package com.sailinghawklabs.triviaking.data.repository
 
+import android.util.Log
 import com.sailinghawklabs.triviaking.data.mapper.toCategoryList
+import com.sailinghawklabs.triviaking.data.mapper.toDtoString
 import com.sailinghawklabs.triviaking.data.mapper.toQuestion
 import com.sailinghawklabs.triviaking.data.remote.OpenTriviaDatabaseApi
 import com.sailinghawklabs.triviaking.data.remote.dto.ResponseCode
 import com.sailinghawklabs.triviaking.domain.model.Category
+import com.sailinghawklabs.triviaking.domain.model.DIFFICULTY
 import com.sailinghawklabs.triviaking.domain.model.Question
 import com.sailinghawklabs.triviaking.domain.repository.QuizRepository
 import com.sailinghawklabs.triviaking.util.Result
@@ -15,14 +18,14 @@ import java.io.IOException
 import javax.inject.Inject
 
 
-class ApiQuizRepositoryImpl @Inject constructor(
+class QuizRepositoryImpl @Inject constructor(
     private val api: OpenTriviaDatabaseApi,
 ) : QuizRepository {
 
     override suspend fun fetchQuestionSet(
         numberOfQuestions: Int,
-        difficultyString: String?,
-        categoryId: Int?,
+        difficulty: DIFFICULTY,
+        category: Category?,
     ): Flow<Result<List<Question>>> {
 
         return flow {
@@ -31,8 +34,8 @@ class ApiQuizRepositoryImpl @Inject constructor(
            try {
                 val response = api.getQuestions(
                     quantity = numberOfQuestions,
-                    categoryId = categoryId,
-                    difficulty = difficultyString,
+                    categoryId = category?.id,
+                    difficulty = difficulty.toDtoString(),
                 )
                 val responseCode = response.responseCode
                 val responseData = response.results

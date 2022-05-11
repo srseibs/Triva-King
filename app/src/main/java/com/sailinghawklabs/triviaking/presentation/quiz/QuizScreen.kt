@@ -1,11 +1,12 @@
-package com.sailinghawklabs.triviaking.ui.screen.quiz
+package com.sailinghawklabs.triviaking.presentation.quiz
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.sailinghawklabs.triviaking.domain.model.Question
 
 @Destination
 @Composable
@@ -13,9 +14,11 @@ fun QuizScreen(
     viewModel: QuizViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
 ) {
+    Log.d("QuizScreen", "QuizScreen: REDRAWING")
 
-    val viewState = viewModel.viewState.collectAsState()
-
-    QuizScreenContent(viewState = viewState.value.screenState)
+    QuizScreenContent(
+        viewState = viewModel.screenState,
+        onViewEvent = viewModel::onQuizEvent,
+    )
 
 }

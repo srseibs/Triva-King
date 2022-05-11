@@ -1,4 +1,4 @@
-package com.sailinghawklabs.triviaking.ui.screen.category
+package com.sailinghawklabs.triviaking.presentation.category
 
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
