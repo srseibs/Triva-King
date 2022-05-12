@@ -5,19 +5,21 @@ import com.sailinghawklabs.triviaking.domain.model.DIFFICULTY
 private val DifficultyDisplayTable: HashMap<DIFFICULTY, String> = hashMapOf(
     (DIFFICULTY.ANY to "Any"),
     (DIFFICULTY.EASY to "Easy"),
+    (DIFFICULTY.MEDIUM to "Medium"),
     (DIFFICULTY.HARD to "Hard"),
-    (DIFFICULTY.DIFFICULT to "Difficult")
-)
+
+    )
 
 private val DifficultyDtoTable: HashMap<DIFFICULTY, String?> = hashMapOf(
     (DIFFICULTY.ANY to null),
     (DIFFICULTY.EASY to "easy"),
+    (DIFFICULTY.MEDIUM to "medium"),
     (DIFFICULTY.HARD to "hard"),
-    (DIFFICULTY.DIFFICULT to "difficult")
+
 )
 
 fun DIFFICULTY.toDtoString(): String? =
-        DifficultyDtoTable.getValue(this)
+    DifficultyDtoTable.getValue(this)
 
 
 fun DIFFICULTY.toDisplayString(): String {

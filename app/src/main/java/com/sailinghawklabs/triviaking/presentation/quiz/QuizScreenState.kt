@@ -12,6 +12,11 @@ data class QuizScreenState(
     val difficulty: String = "",
     val answers: List<String> = emptyList(),
     val correctAnswerIndex: Int = -1,
-    var answerState: List<TriBoxState> = emptyList(),
+
+    var answerBoxes: List<TriBoxState> = emptyList(),
+    val answersEnabled: Boolean = false,
+
+    val continueEnabled: Boolean = false,
+    val continueLabel: String = "",
 )
 

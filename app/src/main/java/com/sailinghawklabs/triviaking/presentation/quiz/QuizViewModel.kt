@@ -27,7 +27,7 @@ class QuizViewModel @Inject constructor(
     var screenState by mutableStateOf(QuizScreenState())
         private set
 
-    private var quizState by mutableStateOf(QuizOverallState())
+    private var gameState by mutableStateOf(QuizGameState())
 
     var gamePreferencesState by mutableStateOf(defaultGamePreferences)
 
@@ -41,38 +41,53 @@ class QuizViewModel @Inject constructor(
 
     fun onQuizEvent(event: QuizScreenEvent) {
 
-        when(event) {
+        when (event) {
             is QuizScreenEvent.AnswerPressed -> {
                 processAnswer(event.answerIndex)
             }
             is QuizScreenEvent.NextQuestionPressed -> {
+                setupQuestion(1)
             }
         }
     }
 
     private fun processAnswer(answer: Int) {
+        val answerIsCorrect = (answer == screenState.correctAnswerIndex)
+        updateGameStateStats(answerIsCorrect)
 
-        val newAnswers = ArrayList<TriBoxState>()
-        for (i in 0 until screenState.answerState.size){
-            val newBox = if (answer == i)
-                TriBoxState.CORRECT
-            else
-                TriBoxState.WRONG
-            newAnswers.add(newBox)
-        }
+        val buttonLabel = if (gameState.isDone()) "Done" else "Next Question"
+        val updatedCheckboxes = gradeCheckboxes(answer)
         screenState = screenState.copy(
-            answerState = newAnswers
+            continueLabel = buttonLabel,
+            continueEnabled = true,
+            numCorrect = gameState.numCorrect,
+            numberOfQuestions = gameState.quiz.size,
+            answerBoxes = updatedCheckboxes,
+            answersEnabled = false,
         )
+    }
 
-        Log.d(
-            "QuizViewModel",
-            "processAnswer: screenState:answerState = ${screenState.answerState.joinToString()}"
+    private fun updateGameStateStats(answerIsCorrect: Boolean) {
+        gameState = gameState.copy(
+            numCorrect = gameState.numCorrect + if (answerIsCorrect) 1 else 0,
+            numWrong = gameState.numWrong + if (answerIsCorrect) 0 else 1,
         )
+    }
 
+    private fun gradeCheckboxes(answer: Int): List<TriBoxState> {
+        val correctAnswer = screenState.correctAnswerIndex
+
+        val gradedAnswerBoxes = ArrayList<TriBoxState>()
+        for (i in 0 until screenState.answerBoxes.size) {
+            gradedAnswerBoxes.add(TriBoxState.UNCHECKED)
+        }
+        gradedAnswerBoxes[answer] = TriBoxState.WRONG
+        gradedAnswerBoxes[correctAnswer] = TriBoxState.CORRECT
+        return gradedAnswerBoxes
     }
 
     private fun resetQuiz() {
-        quizState = quizState.copy(
+        gameState = gameState.copy(
             numCorrect = 0,
             numWrong = 0,
             currentQuestionNumber = 0,
@@ -81,14 +96,10 @@ class QuizViewModel @Inject constructor(
     }
 
     private fun setupQuestion(questionNum: Int) {
-        quizState = quizState.copy(
+        gameState = gameState.copy(
             currentQuestionNumber = questionNum,
         )
-
-        val currentQuestion = quizState.quiz[questionNum]
-        val numQuestions = quizState.quiz.size
-
-        screenState = prepareQuestion(currentQuestion, numQuestions)
+        prepareScreenForCurrentQuestion()
     }
 
     private suspend fun fetchPreferences() {
@@ -111,7 +122,7 @@ class QuizViewModel @Inject constructor(
                     is Result.Success -> {
                         Log.d("QuizViewModel", "fetchAllQuestions: Success: ${result.data}")
 
-                        quizState = quizState.copy(
+                        gameState = gameState.copy(
                             quiz = result.data!!
                         )
                     }
@@ -129,24 +140,32 @@ class QuizViewModel @Inject constructor(
     }
 
 
-    private fun prepareQuestion(question: Question, numQuestions: Int): QuizScreenState {
+    private fun prepareScreenForCurrentQuestion() {
+        val questionNum = gameState.currentQuestionNumber
+        val question = gameState.quiz[questionNum]
         val incorrectAnswers = question.answers
         val numAnswers = incorrectAnswers.size + 1
         val correctAnswerIndex = Random.nextInt(numAnswers)
         val answers = question.answers.shuffled().toMutableList()
         answers.add(correctAnswerIndex, question.correctAnswer)
-        val answerState = List(numAnswers) { TriBoxState.UNCHECKED }
+        val blankAnswerState = List(numAnswers) { TriBoxState.UNCHECKED }
 
-        return screenState.copy(
+        screenState = screenState.copy(
             category = question.category,
-            questionNumber = 0,
+            questionNumber = questionNum,
             question = question.question,
-            numberOfQuestions = numQuestions,
-            numCorrect = 0,
+            numberOfQuestions = gameState.numQuestions(),
+            correctAnswerIndex = correctAnswerIndex,
+            numCorrect = gameState.numCorrect,
             difficulty = question.difficulty.toDisplayString(),
             answers = answers,
-            correctAnswerIndex = correctAnswerIndex,
-            answerState = answerState
+            answerBoxes = blankAnswerState,
+            answersEnabled = true,
+            continueEnabled = false,
+
         )
+
+        Log.d("QuizViewModel",
+            "prepareScreenForCurrentQuestion: ${gameState.numQuestions()}, ${gameState.quiz.size}")
     }
 }
