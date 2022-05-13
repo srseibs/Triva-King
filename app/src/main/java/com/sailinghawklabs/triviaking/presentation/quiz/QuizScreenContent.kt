@@ -19,6 +19,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.CardDefaults.elevatedCardColors
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextAlign
@@ -89,11 +91,17 @@ fun QuizScreenContent(
                     )
                     Spacer(modifier = Modifier.weight(0.5f))
                     ContinuationSection(
-                        buttonEnabled = viewState.continueEnabled,
-                        buttonLabel = viewState.continueLabel,
-                        onClicked = {
-                            onViewEvent(QuizScreenEvent.NextQuestionPressed)
-                        }
+                        continueEnabled = viewState.continueEnabled,
+                        gameOverEnabled = viewState.gameOverEnabled,
+                        onContinueClicked = {
+                            onViewEvent(QuizScreenEvent.GetNextQuestion)
+                        },
+                        onRetryClicked = {
+                            onViewEvent(QuizScreenEvent.RetakeThisQuiz)
+                        },
+                        onNewQuizClicked = {
+                            onViewEvent(QuizScreenEvent.CreateNewQuiz)
+                        },
                     )
                 }
             }
@@ -124,26 +132,68 @@ fun QuestionSection(question: String) {
 
 @Composable
 fun ContinuationSection(
-    buttonLabel: String,
-    buttonEnabled: Boolean,
-    onClicked: () -> Unit,
+    continueEnabled: Boolean,
+    gameOverEnabled: Boolean,
+    onContinueClicked: () -> Unit,
+    onRetryClicked: () -> Unit,
+    onNewQuizClicked: () -> Unit,
 ) {
     Column(
-        horizontalAlignment = CenterHorizontally,
         modifier = Modifier
             .padding(20.dp)
-            .alpha(if (buttonEnabled) 1f else 0f)
+            .alpha(if (continueEnabled || gameOverEnabled) 1f else 0f)
             .fillMaxWidth(),
     ) {
-        Button(
-            onClick = { onClicked() },
-        ) {
-            Text(
-                modifier = Modifier.padding(12.dp),
-                text = buttonLabel,
-                style = MaterialTheme.typography.titleLarge
-            )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = CenterVertically,
+
+            ) {
+            if (gameOverEnabled) {
+                QuizBottomButton(
+                    onClick = onRetryClicked,
+                    enabled = gameOverEnabled,
+                    label = "Retry Quiz"
+                )
+
+                QuizBottomButton(
+                    onClick = onNewQuizClicked,
+                    enabled =  gameOverEnabled,
+                    label = "New Quiz",
+                )
+
+            } else {
+                QuizBottomButton(
+                    onClick = onContinueClicked,
+                    enabled = continueEnabled,
+                    label = "Next Question"
+                )
+            }
+
         }
+    }
+}
+
+@Composable
+fun QuizBottomButton(
+    label: String,
+    enabled: Boolean,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick =  onClick,
+        enabled = enabled,
+        colors = buttonColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        )
+    ) {
+        Text(
+            text = label,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(2.dp)
+        )
     }
 }
 
@@ -182,7 +232,7 @@ fun AnswerDisplay(
     onClicked: () -> Any,
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = CenterVertically,
         modifier = Modifier.padding(end = 8.dp)
     ) {
         TriBox(
@@ -240,7 +290,8 @@ private fun QuizTopBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.Settings,
-                    contentDescription = "Settings")
+                    contentDescription = "Settings"
+                )
             }
         }
     )
@@ -273,6 +324,8 @@ fun QuizScreenContentPreview() {
         questionNumberDisplay = 1,
         numberOfQuestions = 5,
         numCorrect = 1,
+        continueEnabled = false,
+        gameOverEnabled = true,
     )
     TriviaKingTheme() {
         QuizScreenContent(
