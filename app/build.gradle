@@ -88,7 +88,7 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     // Material 3 --
-    def material3_version ='1.0.0-alpha10'
+    def material3_version ='1.0.0-alpha11'
     implementation "androidx.compose.material3:material3:$material3_version"
     implementation "androidx.compose.material3:material3-window-size-class:$material3_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"

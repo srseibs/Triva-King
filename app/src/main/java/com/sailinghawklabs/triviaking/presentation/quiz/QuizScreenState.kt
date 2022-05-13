@@ -4,7 +4,7 @@ import com.sailinghawklabs.triviaking.domain.model.Question
 import com.sailinghawklabs.triviaking.ui.theme.util.TriBoxState
 
 data class QuizScreenState(
-    val questionNumber: Int = 0,
+    val questionNumberDisplay: Int = 0,
     val numberOfQuestions: Int = 0,
     val numCorrect: Int = 0,
     val question: String  = "",

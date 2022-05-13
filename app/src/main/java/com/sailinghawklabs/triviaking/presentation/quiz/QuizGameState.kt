@@ -4,10 +4,10 @@ import com.sailinghawklabs.triviaking.domain.model.Question
 
 data class QuizGameState(
     val quiz: List<Question> = emptyList(),
-    val currentQuestionNumber: Int = -1,
+    val currentQuestionIndex: Int = -1,
     val numCorrect: Int = 0,
     val numWrong: Int = 0,
 )
 
-fun QuizGameState.isDone():Boolean  = (currentQuestionNumber >= numQuestions())
+fun QuizGameState.isLastQuestion():Boolean  = (currentQuestionIndex >= numQuestions()-1)
 fun QuizGameState.numQuestions():Int = quiz.size

@@ -51,7 +51,7 @@ fun QuizScreenContent(
         },
         bottomBar = {
             QuizBottomBar(
-                questionNumber = viewState.questionNumber,
+                questionNumber = viewState.questionNumberDisplay,
                 numberCorrect = viewState.numCorrect,
                 totalQuestions = viewState.numberOfQuestions,
                 category = viewState.category,
@@ -253,7 +253,7 @@ fun QuizScreenContentPreview() {
         answerBoxes = listOf(
             TriBoxState.CORRECT, TriBoxState.UNCHECKED, TriBoxState.WRONG
         ),
-        questionNumber = 1,
+        questionNumberDisplay = 1,
         numberOfQuestions = 5,
         numCorrect = 1,
     )

@@ -7,7 +7,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sailinghawklabs.triviaking.data.mapper.toDisplayString
-import com.sailinghawklabs.triviaking.domain.model.Question
 import com.sailinghawklabs.triviaking.domain.model.defaultGamePreferences
 import com.sailinghawklabs.triviaking.domain.repository.PreferencesRepository
 import com.sailinghawklabs.triviaking.domain.repository.QuizRepository
@@ -46,7 +45,14 @@ class QuizViewModel @Inject constructor(
                 processAnswer(event.answerIndex)
             }
             is QuizScreenEvent.NextQuestionPressed -> {
-                setupQuestion(1)
+                if (gameState.isLastQuestion()) {
+                    resetQuiz()
+                } else {
+                    setupQuestion(
+                        questionIndex = gameState.currentQuestionIndex + 1
+                    )
+                }
+
             }
         }
     }
@@ -55,13 +61,12 @@ class QuizViewModel @Inject constructor(
         val answerIsCorrect = (answer == screenState.correctAnswerIndex)
         updateGameStateStats(answerIsCorrect)
 
-        val buttonLabel = if (gameState.isDone()) "Done" else "Next Question"
         val updatedCheckboxes = gradeCheckboxes(answer)
+
         screenState = screenState.copy(
-            continueLabel = buttonLabel,
             continueEnabled = true,
             numCorrect = gameState.numCorrect,
-            numberOfQuestions = gameState.quiz.size,
+            numberOfQuestions = gameState.numQuestions(),
             answerBoxes = updatedCheckboxes,
             answersEnabled = false,
         )
@@ -90,16 +95,17 @@ class QuizViewModel @Inject constructor(
         gameState = gameState.copy(
             numCorrect = 0,
             numWrong = 0,
-            currentQuestionNumber = 0,
         )
-        setupQuestion(0)
+        setupQuestion(questionIndex = 0)
     }
 
-    private fun setupQuestion(questionNum: Int) {
-        gameState = gameState.copy(
-            currentQuestionNumber = questionNum,
-        )
-        prepareScreenForCurrentQuestion()
+    private fun setupQuestion(questionIndex: Int) {
+        if (questionIndex < gameState.numQuestions() && questionIndex >= 0) {
+            gameState = gameState.copy(
+                currentQuestionIndex = questionIndex,
+            )
+            prepareScreenForCurrentQuestion()
+        }
     }
 
     private suspend fun fetchPreferences() {
@@ -141,18 +147,19 @@ class QuizViewModel @Inject constructor(
 
 
     private fun prepareScreenForCurrentQuestion() {
-        val questionNum = gameState.currentQuestionNumber
-        val question = gameState.quiz[questionNum]
+        val questionIndex = gameState.currentQuestionIndex
+        val question = gameState.quiz[questionIndex]
         val incorrectAnswers = question.answers
         val numAnswers = incorrectAnswers.size + 1
         val correctAnswerIndex = Random.nextInt(numAnswers)
         val answers = question.answers.shuffled().toMutableList()
         answers.add(correctAnswerIndex, question.correctAnswer)
         val blankAnswerState = List(numAnswers) { TriBoxState.UNCHECKED }
+        val buttonLabel = if (gameState.isLastQuestion()) "Restart Quiz" else "Next Question"
 
         screenState = screenState.copy(
             category = question.category,
-            questionNumber = questionNum,
+            questionNumberDisplay = questionIndex + 1,
             question = question.question,
             numberOfQuestions = gameState.numQuestions(),
             correctAnswerIndex = correctAnswerIndex,
@@ -161,11 +168,9 @@ class QuizViewModel @Inject constructor(
             answers = answers,
             answerBoxes = blankAnswerState,
             answersEnabled = true,
+            continueLabel = buttonLabel,
             continueEnabled = false,
 
         )
-
-        Log.d("QuizViewModel",
-            "prepareScreenForCurrentQuestion: ${gameState.numQuestions()}, ${gameState.quiz.size}")
     }
 }
