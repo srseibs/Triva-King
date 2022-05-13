@@ -1,4 +1,4 @@
-package com.sailinghawklabs.triviaking.ui.screen.category
+package com.sailinghawklabs.triviaking.presentation.category
 
 import com.sailinghawklabs.triviaking.domain.model.Category
 

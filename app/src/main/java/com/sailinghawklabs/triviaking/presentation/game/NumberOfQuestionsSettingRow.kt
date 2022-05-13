@@ -1,4 +1,4 @@
-package com.sailinghawklabs.triviaking.ui.screen.game
+package com.sailinghawklabs.triviaking.presentation.game
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -13,9 +13,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.PlusOne
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api

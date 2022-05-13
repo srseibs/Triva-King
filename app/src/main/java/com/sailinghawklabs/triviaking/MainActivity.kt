@@ -10,7 +10,8 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.DestinationsNavHost
-import com.sailinghawklabs.triviaking.ui.screen.NavGraphs
+import com.sailinghawklabs.triviaking.presentation.NavGraphs
+
 import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 import dagger.hilt.android.AndroidEntryPoint
 

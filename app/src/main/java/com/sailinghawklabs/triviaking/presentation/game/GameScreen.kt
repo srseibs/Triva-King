@@ -1,4 +1,4 @@
-package com.sailinghawklabs.triviaking.ui.screen.game
+package com.sailinghawklabs.triviaking.presentation.game
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState

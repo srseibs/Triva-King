@@ -1,8 +1,7 @@
-package com.sailinghawklabs.triviaking.ui.screen.category
+package com.sailinghawklabs.triviaking.presentation.category
 
 import android.content.res.Configuration
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,12 +27,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
-import com.ramcosta.composedestinations.result.EmptyResultBackNavigator
 import com.sailinghawklabs.triviaking.domain.model.Category
 import com.sailinghawklabs.triviaking.domain.model.gameCategoryALL
-import com.sailinghawklabs.triviaking.ui.theme.LocalDimensions
 import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -113,7 +108,6 @@ private fun ListToolBar(
     onBackClicked: () -> Unit,
     onCategoryClicked: (Category?) -> Any,
 ) {
-    val dimensions = LocalDimensions.current
 
     TopAppBar(
         backgroundColor = MaterialTheme.colorScheme.primary,

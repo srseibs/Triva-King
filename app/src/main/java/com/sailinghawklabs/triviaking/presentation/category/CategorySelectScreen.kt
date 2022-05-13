@@ -1,4 +1,4 @@
-package com.sailinghawklabs.triviaking.ui.screen.category
+package com.sailinghawklabs.triviaking.presentation.category
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState

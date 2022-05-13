@@ -1,4 +1,4 @@
-package com.sailinghawklabs.triviaking.ui.screen.game
+package com.sailinghawklabs.triviaking.presentation.game
 
 import android.util.Log
 import androidx.core.math.MathUtils
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// TODO: should be in domain use cases ??
+
 const val MAX_NUM_QUESTIONS = 10
 const val MIN_NUM_QUESTIONS = 2
 
@@ -23,7 +23,8 @@ class GameScreenViewModel @Inject constructor(
     val dataStore: DataStore<GamePreferences>
 ) : ViewModel() {
 
-    private val _gameScreenState = MutableStateFlow(GameScreenState(
+    private val _gameScreenState = MutableStateFlow(
+        GameScreenState(
         gamePreferences = defaultGamePreferences
         )
     )
@@ -59,7 +60,8 @@ class GameScreenViewModel @Inject constructor(
                     numberOfQuestions = MathUtils.clamp(
                         newNumQuestions,
                         MIN_NUM_QUESTIONS,
-                        MAX_NUM_QUESTIONS)
+                        MAX_NUM_QUESTIONS
+                    )
                 )
             }
         }

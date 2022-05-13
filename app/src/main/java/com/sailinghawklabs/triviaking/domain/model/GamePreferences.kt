@@ -15,8 +15,6 @@ data class GamePreferences(
     val difficulty: DIFFICULTY,
 )
 
-enum class DIFFICULTY {ANY, EASY, DIFFICULT, HARD}
-
 val gameCategoryALL:Category? = null
 
 val defaultGamePreferences = GamePreferences(

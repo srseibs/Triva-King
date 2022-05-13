@@ -1,4 +1,4 @@
-package com.sailinghawklabs.triviaking.ui.screen.game
+package com.sailinghawklabs.triviaking.presentation.game
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
-import androidx.compose.material.TopAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.MaterialTheme
@@ -28,9 +27,8 @@ import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import com.sailinghawklabs.triviaking.domain.model.Category
 import com.sailinghawklabs.triviaking.domain.model.DIFFICULTY
 import com.sailinghawklabs.triviaking.domain.model.GamePreferences
-import com.sailinghawklabs.triviaking.ui.screen.destinations.CategorySelectScreenDestination
-import com.sailinghawklabs.triviaking.ui.screen.destinations.QuizScreenDestination
-import com.sailinghawklabs.triviaking.ui.theme.LocalDimensions
+import com.sailinghawklabs.triviaking.presentation.destinations.CategorySelectScreenDestination
+import com.sailinghawklabs.triviaking.presentation.destinations.QuizScreenDestination
 import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 
 @Composable

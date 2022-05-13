@@ -1,8 +1,9 @@
-package com.sailinghawklabs.triviaking.ui.screen.quiz
+package com.sailinghawklabs.triviaking.presentation.quiz
 
 import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,10 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
-import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults.elevatedCardColors
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,13 +26,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.sailinghawklabs.triviaking.data.mapper.toDisplayString
 import com.sailinghawklabs.triviaking.data.remote.dto.expandHtmlCodes
 import com.sailinghawklabs.triviaking.domain.util.fakeQuestion
-import com.sailinghawklabs.triviaking.ui.theme.LocalDimensions
 import com.sailinghawklabs.triviaking.ui.theme.TriviaKingTheme
 import com.sailinghawklabs.triviaking.ui.theme.util.TriBox
 import com.sailinghawklabs.triviaking.ui.theme.util.TriBoxState
@@ -41,6 +42,7 @@ import com.sailinghawklabs.triviaking.ui.theme.util.TriBoxState
 @Composable
 fun QuizScreenContent(
     viewState: QuizScreenState,
+    onViewEvent: (QuizScreenEvent) -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -49,7 +51,7 @@ fun QuizScreenContent(
         },
         bottomBar = {
             QuizBottomBar(
-                questionNumber = viewState.questionNumber,
+                questionNumber = viewState.questionNumberDisplay,
                 numberCorrect = viewState.numCorrect,
                 totalQuestions = viewState.numberOfQuestions,
                 category = viewState.category,
@@ -66,42 +68,44 @@ fun QuizScreenContent(
         ) {
             if (viewState.answers.isNotEmpty()) {
                 Column(
+                    verticalArrangement = Arrangement.SpaceBetween,
                 ) {
                     QuestionSection(viewState.question)
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.weight(0.5f))
                     AnswerSection(
                         answers = viewState.answers,
-                        answerState = viewState.answerState,
-                        onAnswerClicked = {}
+                        answerState = viewState.answerBoxes,
+                        answersEnabled = viewState.answersEnabled,
+                        onAnswerClicked = {
+                            onViewEvent(QuizScreenEvent.AnswerPressed(it))
+                        }
+                    )
+                    Spacer(modifier = Modifier.weight(0.5f))
+                    ContinuationSection(
+                        buttonEnabled = viewState.continueEnabled,
+                        buttonLabel = viewState.continueLabel,
+                        onClicked = {
+                            onViewEvent(QuizScreenEvent.NextQuestionPressed)
+                        }
                     )
                 }
             }
         }
 
     }
-
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuestionSection(question: String) {
 
     Column(
         horizontalAlignment = CenterHorizontally,
         modifier = Modifier
-            .padding(20.dp)
+            .padding(10.dp)
             .fillMaxWidth(),
     ) {
 
         val textColor = MaterialTheme.colorScheme.onSurface
-
-        Text(
-            text = "Question:",
-            style = MaterialTheme.typography.headlineLarge,
-            textAlign = TextAlign.Center,
-            color = textColor,
-        )
-
         Text(
             text = expandHtmlCodes(question),
             style = MaterialTheme.typography.titleLarge,
@@ -111,12 +115,41 @@ fun QuestionSection(question: String) {
     }
 }
 
+
+@Composable
+fun ContinuationSection(
+    buttonLabel: String,
+    buttonEnabled: Boolean,
+    onClicked: () -> Unit,
+) {
+    Column(
+        horizontalAlignment = CenterHorizontally,
+        modifier = Modifier
+            .padding(20.dp)
+            .alpha(if (buttonEnabled) 1f else 0f)
+            .fillMaxWidth(),
+    ) {
+        Button(
+            onClick = { onClicked() },
+        ) {
+            Text(
+                modifier = Modifier.padding(12.dp),
+                text = buttonLabel,
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
+    }
+}
+
 @Composable
 fun AnswerSection(
     answers: List<String>,
+    answersEnabled: Boolean,
     answerState: List<TriBoxState>,
-    onAnswerClicked: (Int) -> Any,
+    onAnswerClicked: (Int) -> Unit,
 ) {
+
+    Log.d("", "AnswerSection: ${answerState.joinToString()}")
     Column(
         modifier = Modifier.padding(8.dp)
     ) {
@@ -124,7 +157,10 @@ fun AnswerSection(
             AnswerDisplay(
                 answerText = expandHtmlCodes(it),
                 answerState = answerState[i],
-                onClicked = {},
+                enabled = answersEnabled,
+                onClicked = {
+                    onAnswerClicked(i)
+                },
             )
             Spacer(modifier = Modifier.height(10.dp))
         }
@@ -136,6 +172,7 @@ fun AnswerSection(
 fun AnswerDisplay(
     answerText: String,
     answerState: TriBoxState,
+    enabled: Boolean,
     onClicked: () -> Any,
 ) {
     Row(
@@ -144,14 +181,21 @@ fun AnswerDisplay(
     ) {
         TriBox(
             state = answerState,
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier
+                .size(32.dp)
+                .clickable(
+                    enabled = enabled,
+                ) {
+                    onClicked()
+                }
         )
 
         ElevatedCard(
             colors = elevatedCardColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
             ),
-            onClick = {},
+            enabled = enabled,
+            onClick = { onClicked() },
             modifier = Modifier
                 .padding(start = 2.dp)
                 .fillMaxWidth(),
@@ -160,7 +204,7 @@ fun AnswerDisplay(
             Text(
                 text = answerText,
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(20.dp)
+                modifier = Modifier.padding(10.dp)
             )
         }
 
@@ -173,8 +217,6 @@ fun AnswerDisplay(
 private fun QuizTopBar(
     title: String,
 ) {
-    val dimensions = LocalDimensions.current
-
     TopAppBar(
         backgroundColor = MaterialTheme.colorScheme.primary,
         title = {
@@ -187,88 +229,17 @@ private fun QuizTopBar(
     )
 }
 
-@Composable
-private fun QuizBottomBar(
-    questionNumber: Int,
-    totalQuestions: Int,
-    numberCorrect: Int,
-    category: String,
-    difficulty: String,
-) {
-    BottomAppBar(
-        containerColor = MaterialTheme.colorScheme.primary,
-//        modifier = Modifier.padding(bottom = 56.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            val titleStyle = MaterialTheme.typography.titleMedium
-            val valueStyle = MaterialTheme.typography.bodyLarge
-            Column(
-            ) {
-                Text(
-                    text = "Question",
-                    style = titleStyle,
-                    modifier = Modifier.align(CenterHorizontally)
-                )
-                Text(
-                    text = "${questionNumber + 1} of $totalQuestions",
-                    style = valueStyle,
-                    modifier = Modifier.align(CenterHorizontally)
-                )
-            }
-            Spacer(modifier = Modifier.width(18.dp))
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = difficulty.replaceFirstChar { it.uppercase() },
-                    style = titleStyle,
-                    modifier = Modifier.align(CenterHorizontally)
-                )
-                Text(
-                    text = expandHtmlCodes(category),
-                    textAlign = TextAlign.Center,
-                    style = valueStyle,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .align(CenterHorizontally)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(18.dp))
-            Column(
-            ) {
-                Text(
-                    text = "Score",
-                    style = titleStyle,
-                    modifier = Modifier.align(CenterHorizontally)
-                )
-                Text(
-                    text = "$numberCorrect",
-                    style = valueStyle,
-                    modifier = Modifier.align(CenterHorizontally)
-                )
-            }
-
-        }
-    }
-
-}
-
 @Preview(
     name = "Night Mode",
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showSystemUi = true,
+    device = Devices.PIXEL
 )
 @Preview(
     name = "Day Mode",
     uiMode = Configuration.UI_MODE_NIGHT_NO,
-    showSystemUi = false,
+    showSystemUi = true,
+    device = Devices.PIXEL
 )
 @Composable
 fun QuizScreenContentPreview() {
@@ -277,16 +248,19 @@ fun QuizScreenContentPreview() {
     val viewState = QuizScreenState(
         question = dummyQuestion.question,
         category = dummyQuestion.category,
-        difficulty = dummyQuestion.difficulty,
+        difficulty = dummyQuestion.difficulty.toDisplayString(),
         answers = dummyQuestion.answers,
-        answerState = listOf(
+        answerBoxes = listOf(
             TriBoxState.CORRECT, TriBoxState.UNCHECKED, TriBoxState.WRONG
         ),
-        questionNumber = 1,
+        questionNumberDisplay = 1,
         numberOfQuestions = 5,
         numCorrect = 1,
     )
     TriviaKingTheme() {
-        QuizScreenContent(viewState = viewState)
+        QuizScreenContent(
+            viewState = viewState,
+            onViewEvent = {},
+        )
     }
 }

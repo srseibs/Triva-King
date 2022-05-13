@@ -7,9 +7,8 @@ fun QuestionDto.toQuestion(): Question {
     return Question(
         category = category,
         question = question,
-        difficulty = difficulty,
+        difficulty = dtoStringToDifficulty(difficultyString),
         correctAnswer = correctAnswer,
         answers = incorrectAnswers
-
     )
 }
