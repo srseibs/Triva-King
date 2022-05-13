@@ -31,11 +31,7 @@ class QuizViewModel @Inject constructor(
     var gamePreferencesState by mutableStateOf(defaultGamePreferences)
 
     init {
-        viewModelScope.launch {
-            fetchPreferences()
-            fetchAllQuestions()
-            resetQuiz()
-        }
+        initializeNewQuiz()
     }
 
     fun onQuizEvent(event: QuizScreenEvent) {
@@ -44,7 +40,7 @@ class QuizViewModel @Inject constructor(
             is QuizScreenEvent.AnswerPressed -> {
                 processAnswer(event.answerIndex)
             }
-            is QuizScreenEvent.NextQuestionPressed -> {
+            is QuizScreenEvent.GetNextQuestion -> {
                 if (gameState.isLastQuestion()) {
                     resetQuiz()
                 } else {
@@ -52,8 +48,21 @@ class QuizViewModel @Inject constructor(
                         questionIndex = gameState.currentQuestionIndex + 1
                     )
                 }
-
             }
+            is QuizScreenEvent.CreateNewQuiz -> {
+                initializeNewQuiz()
+            }
+            is QuizScreenEvent.RetakeThisQuiz -> {
+                resetQuiz()
+            }
+        }
+    }
+
+    private fun initializeNewQuiz() {
+        viewModelScope.launch {
+            fetchPreferences()
+            fetchAllQuestions()
+            resetQuiz()
         }
     }
 
@@ -64,11 +73,13 @@ class QuizViewModel @Inject constructor(
         val updatedCheckboxes = gradeCheckboxes(answer)
 
         screenState = screenState.copy(
-            continueEnabled = true,
+            continueEnabled = ! gameState.isLastQuestion(),
+            gameOverEnabled = gameState.isLastQuestion(),
+            answersEnabled = false,
             numCorrect = gameState.numCorrect,
             numberOfQuestions = gameState.numQuestions(),
             answerBoxes = updatedCheckboxes,
-            answersEnabled = false,
+
         )
     }
 
@@ -145,7 +156,6 @@ class QuizViewModel @Inject constructor(
         }
     }
 
-
     private fun prepareScreenForCurrentQuestion() {
         val questionIndex = gameState.currentQuestionIndex
         val question = gameState.quiz[questionIndex]
@@ -155,7 +165,6 @@ class QuizViewModel @Inject constructor(
         val answers = question.answers.shuffled().toMutableList()
         answers.add(correctAnswerIndex, question.correctAnswer)
         val blankAnswerState = List(numAnswers) { TriBoxState.UNCHECKED }
-        val buttonLabel = if (gameState.isLastQuestion()) "Restart Quiz" else "Next Question"
 
         screenState = screenState.copy(
             category = question.category,
@@ -168,8 +177,8 @@ class QuizViewModel @Inject constructor(
             answers = answers,
             answerBoxes = blankAnswerState,
             answersEnabled = true,
-            continueLabel = buttonLabel,
             continueEnabled = false,
+            gameOverEnabled = false,
 
         )
     }

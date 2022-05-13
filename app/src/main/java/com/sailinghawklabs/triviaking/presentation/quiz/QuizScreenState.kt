@@ -17,6 +17,6 @@ data class QuizScreenState(
     val answersEnabled: Boolean = false,
 
     val continueEnabled: Boolean = false,
-    val continueLabel: String = "",
+    val gameOverEnabled: Boolean = false,
 )
 
