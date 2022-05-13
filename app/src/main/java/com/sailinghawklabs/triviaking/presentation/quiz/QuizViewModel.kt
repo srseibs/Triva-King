@@ -52,7 +52,6 @@ class QuizViewModel @Inject constructor(
                         questionIndex = gameState.currentQuestionIndex + 1
                     )
                 }
-
             }
         }
     }
@@ -144,7 +143,6 @@ class QuizViewModel @Inject constructor(
             Log.d("QuizViewModel", "fetchAllQuestions: ${e.localizedMessage}")
         }
     }
-
 
     private fun prepareScreenForCurrentQuestion() {
         val questionIndex = gameState.currentQuestionIndex
