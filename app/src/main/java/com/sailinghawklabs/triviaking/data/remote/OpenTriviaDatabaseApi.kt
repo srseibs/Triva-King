@@ -1,6 +1,7 @@
 package com.sailinghawklabs.triviaking.data.remote
 
 import com.sailinghawklabs.triviaking.data.remote.dto.CategoriesResponseDto
+import com.sailinghawklabs.triviaking.data.remote.dto.CategoryStatsResponseDto
 import com.sailinghawklabs.triviaking.data.remote.dto.QuestionsResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -21,6 +22,11 @@ interface OpenTriviaDatabaseApi {
         @Query("category") categoryId: Int?,
         @Query("difficulty") difficulty: String?,
         ): QuestionsResponseDto
+
+    @GET("api_count.php")
+    suspend fun getCategoryStats(
+        @Query("category") categoryId: Int,
+    ): CategoryStatsResponseDto
 
 
 }

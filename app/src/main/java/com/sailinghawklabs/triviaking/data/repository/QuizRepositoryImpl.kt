@@ -2,11 +2,13 @@ package com.sailinghawklabs.triviaking.data.repository
 
 import android.util.Log
 import com.sailinghawklabs.triviaking.data.mapper.toCategoryList
+import com.sailinghawklabs.triviaking.data.mapper.toCategoryStats
 import com.sailinghawklabs.triviaking.data.mapper.toDtoString
 import com.sailinghawklabs.triviaking.data.mapper.toQuestion
 import com.sailinghawklabs.triviaking.data.remote.OpenTriviaDatabaseApi
 import com.sailinghawklabs.triviaking.data.remote.dto.ResponseCode
 import com.sailinghawklabs.triviaking.domain.model.Category
+import com.sailinghawklabs.triviaking.domain.model.CategoryStats
 import com.sailinghawklabs.triviaking.domain.model.DIFFICULTY
 import com.sailinghawklabs.triviaking.domain.model.Question
 import com.sailinghawklabs.triviaking.domain.repository.QuizRepository
@@ -93,4 +95,29 @@ class QuizRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun fetchCategoryStats(
+        categoryId: Int,
+    ): Flow<Result<CategoryStats>> {
+        return flow {
+
+            emit(Result.Loading(isLoading = true))
+
+            try {
+                val result = api.getCategoryStats(categoryId).toCategoryStats()
+                emit(Result.Success(result))
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+                emit(Result.Error("Couldn't load data [IO]"))
+
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                emit(Result.Error("Couldn't load data [HTTP]"))
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emit(Result.Error("Unknown error"))
+            }
+        }
+    }
 }

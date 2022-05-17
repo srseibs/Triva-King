@@ -1,10 +1,12 @@
 package com.sailinghawklabs.triviaking.presentation.category
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 
 import com.sailinghawklabs.triviaking.domain.model.Category
+import com.sailinghawklabs.triviaking.domain.model.CategoryStats
 import com.sailinghawklabs.triviaking.domain.model.GamePreferences
 import com.sailinghawklabs.triviaking.domain.repository.QuizRepository
 import com.sailinghawklabs.triviaking.util.Result
@@ -36,14 +38,42 @@ class CategorySelectViewModel @Inject constructor(
 
     fun updateCategory(newCategory: Category?) {
         viewModelScope.launch {
-            storeCategory(newCategory)
+
+            var categoryStats : CategoryStats? = null
+
+            if (newCategory != null) {
+                try {
+
+                    triviaRepository.fetchCategoryStats(newCategory.id).collect { result ->
+                        when (result) {
+                            is Result.Loading -> {
+
+                            }
+                            is Result.Success -> {
+                                categoryStats = result.data
+                            }
+                            is Result.Error -> {
+
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    println(e.localizedMessage ?: "Unknown Error retrieving category stats.")
+                }
+            }
+
+            storeCategory(newCategory, categoryStats)
         }
     }
 
-    private suspend fun storeCategory(newCategory: Category?) {
+    private suspend fun storeCategory(
+        newCategory: Category?,
+        newStats: CategoryStats?,
+    ) {
         dataStore.updateData {
             it.copy(
-                category = newCategory
+                category = newCategory,
+                categoryStats = newStats,
             )
         }
     }
@@ -76,7 +106,6 @@ class CategorySelectViewModel @Inject constructor(
                             )
                         }
                     }
-
                 }
 
             } catch (e: Exception) {
