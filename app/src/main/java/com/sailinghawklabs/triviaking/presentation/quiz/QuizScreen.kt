@@ -19,7 +19,7 @@ fun QuizScreen(
     QuizScreenContent(
         viewState = viewModel.screenState,
         onViewEvent = viewModel::onQuizEvent,
-        onSettingsPressed = {
+        onBackPressed = {
             navigator.popBackStack(
                 route = GameScreenDestination,
                 inclusive = false,

@@ -1,6 +1,8 @@
 package com.sailinghawklabs.triviaking.presentation.game
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,16 +16,21 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.sailinghawklabs.triviaking.data.mapper.lookupCount
 import com.sailinghawklabs.triviaking.data.mapper.toDisplayString
+import com.sailinghawklabs.triviaking.domain.model.CategoryStats
 import com.sailinghawklabs.triviaking.domain.model.DIFFICULTY
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DifficultySettingRow(
-    difficulty: DIFFICULTY,
+    selectedDifficulty: DIFFICULTY,
     onChanged: (DIFFICULTY) -> Unit,
+    statCounter: CategoryStats?,
 ) {
     OutlinedCard(
         elevation = CardDefaults.outlinedCardElevation(
@@ -32,11 +39,10 @@ fun DifficultySettingRow(
         shape = RoundedCornerShape(percent = 30),
         colors = CardDefaults.outlinedCardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
-
             ),
         modifier = Modifier
             .padding(12.dp)
-            .height(60.dp)
+            .height(80.dp)
             .fillMaxWidth(),
     ) {
 
@@ -50,8 +56,9 @@ fun DifficultySettingRow(
             DIFFICULTY.values().forEach {
                 DifficultyButton(
                     label = it.toDisplayString(),
-                    selected = (difficulty == it),
+                    selected = (selectedDifficulty == it),
                     onClicked = { onChanged(it) },
+                    count = it.lookupCount(statCounter),
                 )
             }
         }
@@ -63,6 +70,7 @@ fun DifficultySettingRow(
 fun DifficultyButton(
     label: String,
     selected: Boolean,
+    count: Int?,
     onClicked: () -> Unit,
 ) {
     OutlinedCard(
@@ -75,15 +83,50 @@ fun DifficultyButton(
                 MaterialTheme.colorScheme.primaryContainer,
         ),
     ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.titleSmall,
-            color = if (selected)
-                MaterialTheme.colorScheme.onPrimary
-            else
-                MaterialTheme.colorScheme.onPrimaryContainer,
-            modifier = Modifier
-                .padding(8.dp)
-        )
+        Column(
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.titleSmall,
+                color = if (selected)
+                    MaterialTheme.colorScheme.onPrimary
+                else
+                    MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier
+                    .padding(start = 8.dp, top = 4.dp, end = 8.dp),
+            )
+            Text(
+                text = if (count != null) "($count)" else "",
+                style = MaterialTheme.typography.bodySmall,
+                color = if (selected)
+                    MaterialTheme.colorScheme.onPrimary
+                else
+                    MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.align(CenterHorizontally).padding(bottom = 8.dp)
+            )
+        }
+
     }
+}
+
+@Preview(
+    name = "Night Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
+@Preview(
+    name = "Day Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+)
+@Composable
+fun DifficultySettingRowPreview() {
+
+    val stats = CategoryStats(
+        12,44,66,88
+    )
+
+
+    DifficultySettingRow(
+        selectedDifficulty = DIFFICULTY.MEDIUM, onChanged = {}, statCounter = stats)
+
 }

@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import com.sailinghawklabs.triviaking.domain.model.Category
+import com.sailinghawklabs.triviaking.domain.model.CategoryStats
 import com.sailinghawklabs.triviaking.domain.model.DIFFICULTY
 import com.sailinghawklabs.triviaking.domain.model.GamePreferences
 import com.sailinghawklabs.triviaking.presentation.destinations.CategorySelectScreenDestination
@@ -116,8 +117,9 @@ fun GameSettingsBlock(
         }
 
         DifficultySettingRow(
-            difficulty = viewState.gamePreferences.difficulty,
-            onChanged = { onScreenEvent(GameScreenEvent.DifficultyChanged(it)) }
+            selectedDifficulty = viewState.gamePreferences.difficulty,
+            onChanged = { onScreenEvent(GameScreenEvent.DifficultyChanged(it)) },
+            statCounter = viewState.gamePreferences.categoryStats,
         )
 
         NumberOfQuestionsSettingRow(
@@ -163,6 +165,12 @@ fun GameScreenContentPreview() {
             category = Category(
                 id = 12,
                 name = "Really long name taking 2 lines."
+            ),
+            categoryStats = CategoryStats(
+                numTotal = 144,
+                numHard = 12,
+                numMedium = 45,
+                numEasy = 88,
             )
         )
     )

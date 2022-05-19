@@ -15,13 +15,14 @@ fun CategorySelectScreen(
 
     val viewState = viewModel.categoryState.collectAsState().value
 
+    if(viewState is CategorySelectState.Dismissed) {
+        navigator.navigateUp()
+    }
+
     CategorySelectContent(
         viewState = viewState,
         onBackClicked = {navigator.popBackStack() },
-        onCategoryClicked = {
-            viewModel.updateCategory(it)
-            navigator.popBackStack()
-        }
+        onCategoryClicked = { viewModel.updateCategory(it)}
     )
 }
 

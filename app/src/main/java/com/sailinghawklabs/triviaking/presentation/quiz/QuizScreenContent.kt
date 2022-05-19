@@ -17,6 +17,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowLeft
+import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
@@ -48,14 +51,14 @@ import com.sailinghawklabs.triviaking.ui.theme.util.TriBoxState
 fun QuizScreenContent(
     viewState: QuizScreenState,
     onViewEvent: (QuizScreenEvent) -> Unit,
-    onSettingsPressed: () -> Unit,
+    onBackPressed: () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             QuizTopBar(
                 title = "Trivia King",
-                onSettingsPressed = onSettingsPressed,
+                onBackPressed = onBackPressed,
             )
         },
         bottomBar = {
@@ -272,10 +275,18 @@ fun AnswerDisplay(
 @Composable
 private fun QuizTopBar(
     title: String,
-    onSettingsPressed: () -> Unit,
+    onBackPressed: () -> Unit,
 ) {
     TopAppBar(
         backgroundColor = MaterialTheme.colorScheme.primary,
+        navigationIcon = {
+                         IconButton(onClick = onBackPressed ) {
+                             Icon(
+                                 imageVector = Icons.Default.ArrowBack,
+                                 tint = MaterialTheme.colorScheme.onPrimary,
+                                 contentDescription = "back" )
+                         }
+        },
         title = {
             Text(
                 text = title,
@@ -283,17 +294,6 @@ private fun QuizTopBar(
                 style = MaterialTheme.typography.titleLarge,
             )
         },
-        actions = {
-            IconButton(
-                onClick = onSettingsPressed
-
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "Settings"
-                )
-            }
-        }
     )
 }
 
@@ -331,7 +331,7 @@ fun QuizScreenContentPreview() {
         QuizScreenContent(
             viewState = viewState,
             onViewEvent = {},
-            onSettingsPressed = {},
+            onBackPressed = {},
         )
     }
 }
