@@ -39,7 +39,7 @@ class CategorySelectViewModel @Inject constructor(
     fun updateCategory(newCategory: Category?) {
         viewModelScope.launch {
 
-            var categoryStats : CategoryStats? = null
+            var categoryStats: CategoryStats? = null
 
             if (newCategory != null) {
                 try {
@@ -63,6 +63,13 @@ class CategorySelectViewModel @Inject constructor(
             }
 
             storeCategory(newCategory, categoryStats)
+
+            try {
+                _categoryState.tryEmit(CategorySelectState.Dismissed)
+            } catch (e: Exception) {
+                println(e.localizedMessage ?: "Error dismissing Category Screen")
+            }
+
         }
     }
 
@@ -70,12 +77,13 @@ class CategorySelectViewModel @Inject constructor(
         newCategory: Category?,
         newStats: CategoryStats?,
     ) {
-        dataStore.updateData {
+        val result = dataStore.updateData {
             it.copy(
                 category = newCategory,
                 categoryStats = newStats,
             )
         }
+        Log.d("CategorySelectViewModel", "storeCategory: $result")
     }
 
     private fun fetchCategories() {
